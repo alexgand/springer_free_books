@@ -13,6 +13,7 @@ books = pd.read_excel('https://resource-cms.springernature.com/springer-cms/rest
 print('Download started.')
 
 for url, title, author in tqdm(books[['OpenURL', 'Book Title', 'Author']].values):
+# for url, title, author in tqdm(books[348:][['OpenURL', 'Book Title', 'Author']].values):
 
     r = requests.get(url) 
     new_url = r.url
@@ -23,7 +24,7 @@ for url, title, author in tqdm(books[['OpenURL', 'Book Title', 'Author']].values
     new_url = new_url + '.pdf'
 
     final = new_url.split('/')[-1]
-    final = title + ' - ' + author.replace(',','-').replace('.','') + '.pdf'
+    final = title.replace(',','-').replace('.','').replace('/',' ') + ' - ' + author.replace(',','-').replace('.','').replace('/',' ') + '.pdf'
 
     #wget.download(new_url, folder + final)
 
