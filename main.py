@@ -6,10 +6,11 @@ from tqdm import tqdm
 # insert here the folder you want the books to be downloaded:
 folder = 'C:/code/download_books/download/'
 
+
 if not os.path.exists(folder):
     os.mkdir(folder)
 
-books = pd.read_excel('https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v3')
+books = pd.read_excel('http://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v3')
 
 # save table:
 books.to_excel(folder + 'table.xlsx')
