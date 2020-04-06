@@ -9,7 +9,7 @@ folder = os.getcwd() + '/download/'
 if not os.path.exists(folder):
     os.mkdir(folder)
 
-books = pd.read_excel('https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v3')
+books = pd.read_excel('https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4')
 
 # save table:
 books.to_excel(folder + 'table.xlsx')
