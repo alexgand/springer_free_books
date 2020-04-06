@@ -4,6 +4,8 @@ Just change the folder variable to the folder you want the books downloaded and 
 
 If you want just one or two specific books, get the excel file from the folowing link and download just those: https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v3
 
+Now updated to download also epub files if it's available.
+
 It took about 1.5 hours to complete the 409 english books (7.2 GB) on my machine.
 
 Thanks Spriger!
