@@ -10,7 +10,7 @@ The books are now organized in sub folders according to the subject ("English Pa
 
 Now updated to also download epub files if it's available.
 
-If you want just one or two specific books, get the excel file from the folowing link and download just those: https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v3
+If you want just one or two specific books, get the excel file from the folowing link and download just those: https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4
 
 It took about 1.5 hours to complete the 409 english books (7.2 GB) on my machine.
 
