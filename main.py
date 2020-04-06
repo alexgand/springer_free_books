@@ -15,7 +15,7 @@ books = pd.read_excel('https://resource-cms.springernature.com/springer-cms/rest
 books.to_excel(folder + 'table.xlsx')
 
 # debug:
-books = books.head()
+# books = books.head()
 
 print('Download started.')
 
