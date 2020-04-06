@@ -1,5 +1,14 @@
 ## Python script to download all Springer books released for free during the 2020 COVID-19 quarantine
 
+## Usage
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+python3 main.py
+```
+
 Just change the folder variable to the folder you want the books downloaded and run the scripts.
 
 If you want just one or two specific books, get the excel file from the folowing link and download just those: https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v3
