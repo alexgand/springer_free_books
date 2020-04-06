@@ -24,12 +24,27 @@ for url, title, author in tqdm(books[['OpenURL', 'Book Title', 'Author']].values
     new_url = new_url + '.pdf'
 
     final = new_url.split('/')[-1]
-    final = title.replace(',','-').replace('.','').replace('/',' ') + ' - ' + author.replace(',','-').replace('.','').replace('/',' ') + '.pdf'
+    final = title.replace(',','-').replace('.','').replace('/',' ') + ' - ' + author.replace(',','-').replace('.','').replace('/',' ') + ' - ' + final
 
     #wget.download(new_url, folder + final)
 
     myfile = requests.get(new_url, allow_redirects=True)
     open(folder+final, 'wb').write(myfile.content)
+    
+    #download epub version too if exists
+    new_url = r.url
+
+    new_url = new_url.replace('/book/','/download/epub/')
+    new_url = new_url.replace('%2F','/')
+    new_url = new_url + '.epub'
+
+    final = new_url.split('/')[-1]
+    final = title.replace(',','-').replace('.','').replace('/',' ') + ' - ' + author.replace(',','-').replace('.','').replace('/',' ') + ' - ' + final
+    
+    request = requests.get(new_url)
+    if request.status_code == 200:
+        myfile = requests.get(new_url, allow_redirects=True)
+        open(folder+final, 'wb').write(myfile.content)
 
 print('Download finished.')
 
