@@ -4,7 +4,10 @@
 
 Just run the script in the desired folder. It will automatically create a /download/ subfolder and will categorize the books acording the subject.
 
-If you want to mannually set a folder to download, insert `folder = 'C:/desired_folder/'` in line 11 in main.py.
+If you want to mannually set a folder to download, use the -d option, for example:
+```bash
+python3 main.py -d 'C:/desired_folder/'
+```
 
 The books are now organized in sub folders according to the subject ("English Package Name" column).
 
