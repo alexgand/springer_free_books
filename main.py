@@ -16,13 +16,15 @@ def parse_book_url(url, title, author, format_='pdf'):
     format_ = format_.lower()
 
     # Replace percent-encoding with UTF-8 characters, replace "/book/..." URL
-    # path prefix with "/content/pdf/...", and add PDF extension.
+    # path prefix with "/content/pdf/..." (or "/content/epub/...", etc. based
+    # on `format_`), and add format extension.
     download_url = urllib.parse.unquote(url)
     download_url = download_url.replace('book', 'content/' + format_)
     download_url += '.' + format_
 
     original_fname = os.path.split(download_url)[1]
 
+    # Replace desired characters for human-friendly local filename.
     char_replacements = {
         ',': '-',
         '.': '',
