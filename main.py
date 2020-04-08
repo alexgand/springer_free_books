@@ -19,7 +19,12 @@ def parse_book_url(url, title, author, format_='pdf'):
     # path prefix with "/content/pdf/..." (or "/content/epub/...", etc. based
     # on `format_`), and add format extension.
     download_url = urllib.parse.unquote(url)
-    download_url = download_url.replace('book', 'content/' + format_)
+    if format_ == "pdf":
+        download_url = download_url.replace('book', 'content/' + format_)
+    elif format_ == "epub":
+        download_url = download_url.replace('book', 'download/' + format_)
+    else:
+        raise ValueError("Unsupported format: {}".format(format_))
     download_url += '.' + format_
 
     original_fname = os.path.split(download_url)[1]
