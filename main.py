@@ -50,6 +50,7 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
 
         final = new_url.split('/')[-1]
         final = title.replace(',','-').replace('.','').replace('/',' ') + ' - ' + author.replace(',','-').replace('.','').replace('/',' ') + ' - ' + final
+        output_file = new_folder+final
         
         request = requests.get(new_url)
         if request.status_code == 200:
