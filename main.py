@@ -39,8 +39,10 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
     output_file = new_folder+final
     if not os.path.exists(output_file):
         myfile = requests.get(new_url, allow_redirects=True)
-        open(output_file, 'wb').write(myfile.content)
-        
+        try:
+            open(output_file, 'wb').write(myfile.content)
+        except OSError: 
+            print("Error: PDF filename appears incorrect.")
         #download epub version too if exists
         new_url = r.url
 
@@ -54,6 +56,9 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
         request = requests.get(new_url)
         if request.status_code == 200:
             myfile = requests.get(new_url, allow_redirects=True)
-        open(output_file, 'wb').write(myfile.content)
+        try:
+            open(output_file, 'wb').write(myfile.content)
+        except OSError: 
+            print("Error: EPUB filename appears incorrect.")
 
 print('Download finished.')
