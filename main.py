@@ -35,11 +35,14 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
     new_url = new_url + '.pdf'
 
     final = new_url.split('/')[-1]
-    final = title.replace(',','-').replace('.','').replace('/',' ') + ' - ' + author.replace(',','-').replace('.','').replace('/',' ') + ' - ' + final
+    final = title.replace(',','-').replace('.','').replace('/',' ').replace(':',' ') + ' - ' + author.replace(',','-').replace('.','').replace('/',' ').replace(':',' ') + ' - ' + final
     output_file = new_folder+final
     if not os.path.exists(output_file):
         myfile = requests.get(new_url, allow_redirects=True)
-        open(output_file, 'wb').write(myfile.content)
+        try:
+            open(output_file, 'wb').write(myfile.content)
+        except OSError: 
+            print("Error: PDF filename is appears incorrect.")
         
         #download epub version too if exists
         new_url = r.url
@@ -49,12 +52,15 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
         new_url = new_url + '.epub'
 
         final = new_url.split('/')[-1]
-        final = title.replace(',','-').replace('.','').replace('/',' ') + ' - ' + author.replace(',','-').replace('.','').replace('/',' ') + ' - ' + final
+        final = title.replace(',','-').replace('.','').replace('/',' ').replace(':',' ') + ' - ' + author.replace(',','-').replace('.','').replace('/',' ').replace(':',' ') + ' - ' + final
         output_file = new_folder+final
         
         request = requests.get(new_url)
         if request.status_code == 200:
             myfile = requests.get(new_url, allow_redirects=True)
-        open(output_file, 'wb').write(myfile.content)
-
+        try:
+            open(output_file, 'wb').write(myfile.content)
+        except OSError: 
+            print("Error: EPUB filename is appears incorrect.")
+            
 print('Download finished.')
