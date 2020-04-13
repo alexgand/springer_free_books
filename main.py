@@ -6,7 +6,7 @@ import pandas as pd
 from tqdm import tqdm
 
 # insert here the folder you want the books to be downloaded:
-folder = os.getcwd() + '/download/'
+folder = os.getcwd() + '/downloads/'
 
 if not os.path.exists(folder):
     os.mkdir(folder)
