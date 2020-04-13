@@ -29,3 +29,22 @@ python3 main.py
 * https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v3
 
 Thanks Springer!
+
+## Docker container to do all the work
+
+Considering you cloned the repo in a folder, as:
+```bash
+cd \home\[user]\workspace`
+git clone https://github.com/alexgv99/springer_free_books.git
+cd springer_free_books
+mkdir downloads
+```
+You can run the scripts like that:
+
+```bash
+docker build . -t springer-image
+docker run --name springer -v /home/[user]]/workspace/springer_free_books/downloads:/app/downloads springer-image
+```
+
+and the downloads will be at:
+`\home\[user]\workspace\springer_free_books\downloads`
