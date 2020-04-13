@@ -43,8 +43,8 @@ You can run the scripts like that:
 
 ```bash
 docker build . -t springer-image
-docker run --name springer -v /home/[user]]/workspace/springer_free_books/downloads:/app/downloads springer-image
+docker run --rm -v [local_download_folder]:/app/downloads springer-image
 ```
 
-and the downloads will be at:
-`\home\[user]\workspace\springer_free_books\downloads`
+and the downloads will be at [local_download_folder]
+
