@@ -5,5 +5,5 @@ COPY requirements.txt /app/
 
 WORKDIR /app
 
-RUN chmod 740 ./main.pay && mkdir ./download/ && pip install -r requirements.txt
-CMD ["main.py"]
+RUN chmod 740 ./main.py && mkdir ./downloads/ && pip install -r requirements.txt
+CMD ["/app/main.py"]
