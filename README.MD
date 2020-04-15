@@ -46,7 +46,7 @@ Thanks Springer!
 Considering you cloned the repo in a folder, as:
 ```bash
 cd \home\[user]\workspace`
-git clone https://github.com/alexgv99/springer_free_books.git
+git clone https://github.com/alexgand/springer_free_books.git
 cd springer_free_books
 mkdir downloads
 ```
