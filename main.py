@@ -63,9 +63,9 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
         request = requests.get(new_url)
         if request.status_code == 200:
             myfile = requests.get(new_url, allow_redirects=True)
-        try:
-            open(output_file, 'wb').write(myfile.content)
-        except OSError: 
-            print("Error: EPUB filename is appears incorrect.")
+            try:
+                open(output_file, 'wb').write(myfile.content)
+            except OSError: 
+                print("Error: EPUB filename is appears incorrect.")
             
 print('Download finished.')
