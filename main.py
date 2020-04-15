@@ -11,7 +11,7 @@ folder = os.getcwd() + '/downloads/'
 if not os.path.exists(folder):
     os.mkdir(folder)
     
-if not os.path.exists("table.xlsx")
+if not os.path.exists("table.xlsx"):
     books = pd.read_excel('https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4')
 
     # save table:
