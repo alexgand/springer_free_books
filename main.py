@@ -3,7 +3,36 @@
 import os
 import requests
 import pandas as pd
+import PyPDF2
+import zipfile
 from tqdm import tqdm
+
+
+def is_valid_pdf(filename):
+    try:
+        PyPDF2.PdfFileReader(open(filename, 'rb'), strict=False)
+        return True
+
+    except PyPDF2.utils.PdfReadError:
+        print(f'PDF corrupted or not a PDF: {filename}')
+        return False
+
+def is_valid_epub(filename):
+    if not zipfile.is_zipfile(filename):
+        print(f'ePub corrupted or not an ePub: {filename}')
+        return False
+
+    try:
+        with zipfile.ZipFile(filename, 'r') as zip_ref:
+            all_valid = zip_ref.testzip() is None
+            if not all_valid:
+                print(f'ePub corrupted or not an ePub: {filename}')
+            return all_valid
+
+    except zipfile.BadZipFile:
+        print(f'ePub corrupted or not an ePub: {filename}')
+        return False
+
 
 # insert here the folder you want the books to be downloaded:
 folder = os.path.join(os.getcwd(), 'downloads')
@@ -42,11 +71,18 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
     output_file = os.path.join(new_folder, final)
 
     if not os.path.exists(output_file):
-        myfile = requests.get(new_url, allow_redirects=True)
-        try:
-            open(output_file, 'wb').write(myfile.content)
-        except OSError: 
-            print("Error: PDF filename is appears incorrect.")
+        tries = 0
+        while tries < 3:
+            myfile = requests.get(new_url, allow_redirects=True)
+            try:
+                open(output_file, 'wb').write(myfile.content)
+                if is_valid_pdf(output_file):
+                    break
+                os.remove(output_file)
+                tries += 1
+            except OSError: 
+                print("Error: PDF filename appears incorrect.")
+                break
         
         #download epub version too if exists
         new_url = r.url
@@ -59,12 +95,21 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
         final = title.replace(',','-').replace('.','').replace('/',' ').replace(':',' ') + ' - ' + author.replace(',','-').replace('.','').replace('/',' ').replace(':',' ') + ' - ' + final
         output_file = os.path.join(new_folder, final)
         
-        request = requests.get(new_url)
-        if request.status_code == 200:
+        tries = 0
+        while tries < 3:
+            request = requests.get(new_url)
+            if request.status_code != 200:
+                break
+
             myfile = requests.get(new_url, allow_redirects=True)
             try:
                 open(output_file, 'wb').write(myfile.content)
+                if is_valid_epub(output_file):
+                    break
+                os.remove(output_file)
+                tries += 1
             except OSError: 
-                print("Error: EPUB filename is appears incorrect.")
+                print("Error: EPUB filename appears incorrect.")
+                break
             
 print('Download finished.')
