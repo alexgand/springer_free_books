@@ -41,10 +41,10 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
     final = title.replace(',','-').replace('.','').replace('/',' ').replace(':',' ') + ' - ' + author.replace(',','-').replace('.','').replace('/',' ').replace(':',' ') + ' - ' + final
     output_file = os.path.join(new_folder, final)
 
-    if not os.path.exists(output_file):
+    if not os.path.exists(output_file.encode('utf-8')):
         myfile = requests.get(new_url, allow_redirects=True)
         try:
-            open(output_file, 'wb').write(myfile.content)
+            open(output_file.encode('utf-8'), 'wb').write(myfile.content)
         except OSError: 
             print("Error: PDF filename is appears incorrect.")
         
@@ -63,7 +63,7 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
         if request.status_code == 200:
             myfile = requests.get(new_url, allow_redirects=True)
             try:
-                open(output_file, 'wb').write(myfile.content)
+                open(output_file.encode('utf-8'), 'wb').write(myfile.content)
             except OSError: 
                 print("Error: EPUB filename is appears incorrect.")
             
