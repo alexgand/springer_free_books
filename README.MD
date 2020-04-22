@@ -37,7 +37,9 @@ python main.py
 ### Virtual environment on Windows (Python 2.x):
 ```
 python -m virtualenv .venv
-.venv\Scripts\activate.bat
+cd .venv/Scripts
+activate.bat
+cd ../..
 pip install -r requirements2x.txt
 python main.py
 ```
