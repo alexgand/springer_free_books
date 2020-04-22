@@ -2,6 +2,7 @@
 
 import os
 import requests
+import shutil
 import pandas as pd
 from tqdm import tqdm
 
@@ -10,7 +11,7 @@ folder = os.path.join(os.getcwd(), 'downloads')
 
 if not os.path.exists(folder):
     os.mkdir(folder)
-    
+
 if not os.path.exists(os.path.join(folder, "table.xlsx")):
     books = pd.read_excel('https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4')
 
@@ -29,7 +30,7 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
     if not os.path.exists(new_folder):
         os.mkdir(new_folder)
 
-    r = requests.get(url) 
+    r = requests.get(url)
     new_url = r.url
 
     new_url = new_url.replace('/book/','/content/pdf/')
@@ -42,14 +43,15 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
     final = final.encode('ascii', 'ignore').decode('ascii')
     final = (final[:145] + '.pdf') if len(final) > 145 else final
     output_file = os.path.join(new_folder, final)
-    
+
     if not os.path.exists(output_file.encode('utf-8')):
-        myfile = requests.get(new_url, allow_redirects=True)
-        try:
-            open(output_file.encode('utf-8'), 'wb').write(myfile.content)
-        except OSError: 
-            print("Error: PDF filename appears incorrect.")
-        
+        with requests.get(url, stream=True) as r:
+            try:
+                with open(output_file.encode('utf-8'), 'wb') as f:
+                    shutil.copyfileobj(r.raw, f)
+            except OSError:
+                print("Error: PDF filename appears incorrect.")
+
         #download epub version too if exists
         new_url = r.url
 
@@ -62,13 +64,14 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
         final = final.encode('ascii', 'ignore').decode('ascii')
         final = (final[:145] + '.epub') if len(final) > 145 else final
         output_file = os.path.join(new_folder, final)
-        
+
         request = requests.get(new_url)
         if request.status_code == 200:
-            myfile = requests.get(new_url, allow_redirects=True)
-            try:
-                open(output_file.encode('utf-8'), 'wb').write(myfile.content)
-            except OSError: 
-                print("Error: EPUB filename appears incorrect.")
-            
+            with requests.get(url, stream=True) as r:
+                try:
+                    with open(output_file.encode('utf-8'), 'wb') as f:
+                        shutil.copyfileobj(r.raw, f)
+                except OSError:
+                    print("Error: EPUB filename appears incorrect.")
+
 print('Download finished.')
