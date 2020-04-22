@@ -39,14 +39,16 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
 
     final = new_url.split('/')[-1]
     final = title.replace(',','-').replace('.','').replace('/',' ').replace(':',' ') + ' - ' + author.replace(',','-').replace('.','').replace('/',' ').replace(':',' ') + ' - ' + final
+    final = final.encode('ascii', 'ignore').decode('ascii')
+    final = (final[:145] + '.pdf') if len(final) > 145 else final
     output_file = os.path.join(new_folder, final)
-
+    
     if not os.path.exists(output_file.encode('utf-8')):
         myfile = requests.get(new_url, allow_redirects=True)
         try:
             open(output_file.encode('utf-8'), 'wb').write(myfile.content)
         except OSError: 
-            print("Error: PDF filename is appears incorrect.")
+            print("Error: PDF filename appears incorrect.")
         
         #download epub version too if exists
         new_url = r.url
@@ -57,6 +59,8 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
 
         final = new_url.split('/')[-1]
         final = title.replace(',','-').replace('.','').replace('/',' ').replace(':',' ') + ' - ' + author.replace(',','-').replace('.','').replace('/',' ').replace(':',' ') + ' - ' + final
+        final = final.encode('ascii', 'ignore').decode('ascii')
+        final = (final[:145] + '.epub') if len(final) > 145 else final
         output_file = os.path.join(new_folder, final)
         
         request = requests.get(new_url)
@@ -65,6 +69,6 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
             try:
                 open(output_file.encode('utf-8'), 'wb').write(myfile.content)
             except OSError: 
-                print("Error: EPUB filename is appears incorrect.")
+                print("Error: EPUB filename appears incorrect.")
             
 print('Download finished.')
