@@ -45,7 +45,7 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
     output_file = os.path.join(new_folder, final)
 
     if not os.path.exists(output_file.encode('utf-8')):
-        with requests.get(url, stream=True) as r:
+        with requests.get(new_url, stream=True) as r:
             try:
                 with open(output_file.encode('utf-8'), 'wb') as f:
                     shutil.copyfileobj(r.raw, f)
@@ -67,7 +67,7 @@ for url, title, author, pk_name in tqdm(books[['OpenURL', 'Book Title', 'Author'
 
         request = requests.get(new_url)
         if request.status_code == 200:
-            with requests.get(url, stream=True) as r:
+            with requests.get(new_url, stream=True) as r:
                 try:
                     with open(output_file.encode('utf-8'), 'wb') as f:
                         shutil.copyfileobj(r.raw, f)
