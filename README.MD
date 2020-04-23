@@ -23,7 +23,7 @@ pip install -r requirements.txt
 python3 main.py
 ```
 
-### Virtual environment on Windows:
+### Virtual environment on Windows (Python 3.x):
 
 ```
 python -m venv .venv
@@ -31,6 +31,16 @@ cd .venv/Scripts
 activate.bat
 cd ../..
 pip install -r requirements.txt
+python main.py
+```
+
+### Virtual environment on Windows (Python 2.x):
+```
+python -m virtualenv .venv
+cd .venv/Scripts
+activate.bat
+cd ../..
+pip install -r requirements2x.txt
 python main.py
 ```
 
