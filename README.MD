@@ -34,7 +34,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-### Virtual environment on Windows (Python 2.x):
+### Virtual environment on Windows (Python 2.7.x):
 ```
 python -m virtualenv .venv
 cd .venv/Scripts
