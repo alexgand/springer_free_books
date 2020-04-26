@@ -1,38 +1,43 @@
 #!/usr/bin/env python
 
-import os
-import requests
-import pandas as pd
+
 from tqdm import tqdm
-from helper import *
+import requests
+import argparse
+import sys
+import os
 
-folder = create_relative_path_if_not_exist('downloads')
+import helper
+import gui
 
-table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4'
-table = 'table_' + table_url.split('/')[-1] + '.xlsx'
-table_path = os.path.join(folder, table)
-if not os.path.exists(table_path):
-    books = pd.read_excel(table_url)
-    # Save table
-    books.to_excel(table_path)
-else:
-    books = pd.read_excel(table_path, index_col=0, header=0)
+def main(output_path, gui=False, list_genres=False):
+    books = helper.get_table(output_path)
+    if gui:
+        app = gui.create()
+        app.populate_genres(helper.get_book_genres(books))
+        app.mainloop()
 
+    if list_genres:
+        print("\nAvailable genre options:")
+        genres = helper.get_book_genres(books)
+        for key in sorted(genres):
+            print("  '{}': {} books".format(key, genres[key]))
+        print()
+        return 0
 
-for url, title, author, edition, isbn, category in tqdm(books[['OpenURL', 'Book Title', 'Author', 'Edition', 'Electronic ISBN', 'English Package Name']].values):
-    new_folder = create_relative_path_if_not_exist(os.path.join(folder, category))
+    helper.download_books(books, output_path)
 
-    r = requests.get(url)
-    new_url = r.url.replace('%2F','/').replace('/book/','/content/pdf/') + '.pdf'
-    bookname = compose_bookname(title, author, edition, isbn)
-    output_file = os.path.join(new_folder, bookname + '.pdf')
-    download_book(new_url, output_file)
+    print('\nFinish downloading.')
 
-    # Download EPUB version too if exists
-    new_url = r.url.replace('%2F','/').replace('/book/','/download/epub/') + '.epub'
-    output_file = os.path.join(new_folder, bookname + '.epub')
-    request = requests.get(new_url, stream = True)
-    if request.status_code == 200:
-       download_book(new_url, output_file)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("output_folder", help="Folder to put downloaded books in")
+    parser.add_argument("--all", help="Download all available book (both PDFs and EPUBs)")
+    parser.add_argument("--only_pdf", help="Downloads only PDFs")
+    parser.add_argument("--only_epub", help="Downloads only EPUBs)")
+    parser.add_argument("--list_genres", action='store_true', help="Lists out available genres")
+    parser.add_argument("--only_genres", help="Downloads only books from certain genres")
+    parser.add_argument("--confirm_before_download", help="Prompts user whether to download for each book")
 
-print('\nFinish downloading.')
+    args = parser.parse_args()
+    sys.exit(main(args.output_folder, list_genres=args.list_genres))
