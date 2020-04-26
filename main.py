@@ -15,11 +15,17 @@ if not os.path.exists(table_path):
     books = pd.read_excel(table_url)
     # Save table
     books.to_excel(table_path)
+    exit() # run a second time with adjusted book listing
 else:
     books = pd.read_excel(table_path, index_col=0, header=0)
 
 
 for url, title, author, edition, isbn, category in tqdm(books[['OpenURL', 'Book Title', 'Author', 'Edition', 'Electronic ISBN', 'English Package Name']].values):
+
+    if type(category) is not str:
+        # empty category => most likely empty row => skip
+        continue
+
     new_folder = create_relative_path_if_not_exist(os.path.join(folder, category))
 
     r = requests.get(url)
@@ -33,6 +39,8 @@ for url, title, author, edition, isbn, category in tqdm(books[['OpenURL', 'Book 
     output_file = os.path.join(new_folder, bookname + '.epub')
     request = requests.get(new_url, stream = True)
     if request.status_code == 200:
-       download_book(new_url, output_file)
+        download_book(new_url, output_file)
+
+# end for
 
 print('\nFinish downloading.')
