@@ -1,6 +1,7 @@
 download/
 download_old/
 *.xlsx
+.vscode
 
 # Created by https://www.gitignore.io/api/venv,linux,macos,python,windows,virtualenv
 # Edit at https://www.gitignore.io/?templates=venv,linux,macos,python,windows,virtualenv
