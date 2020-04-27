@@ -53,10 +53,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("output_folder", help="Folder to put downloaded books in")
     parser.add_argument(
-        "--all", action="store_true", help="Download all available book (both PDFs and EPUBs)"
+        "--all",
+        action="store_true",
+        help="Download all available book (both PDFs and EPUBs)",
     )
     parser.add_argument("--only_pdf", help="Downloads only PDFs")
-    parser.add_argument("--only_epub", help="Downloads only EPUBs)")
+    parser.add_argument("--only_epub", help="Downloads only EPUBs")
     parser.add_argument(
         "--list_genres", action="store_true", help="Lists out available genres"
     )
@@ -79,7 +81,8 @@ if __name__ == "__main__":
         "-v", "--verbose", action="store_true", help="Enables verbose mode"
     )
     parser.add_argument(
-        "--confirm_before_download", action="store_true",
+        "--confirm_before_download",
+        action="store_true",
         help="Prompts user whether to download for each book",
     )
 
