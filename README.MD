@@ -7,9 +7,10 @@ Replace `./ebooks` with the path to the folder where the books will be stored.
 
 `python3 springer_downloader.py ./ebooks --all`
 
+#### Advanced Usage - Download certain books
 If you don't want to download everything then use the `--genre` to specify a genre or `--title` to specify a title. Partial matching is allowed. If you aren't sure the title or genre, use `--list_genre` to print out all available genres. Similarly, use `--list_books` to print out the titles of all books available to download or `--list_books GENRE` to see all books available to download from a particular genre.
 
-See examples for more
+`python3 springer_downloader.py ../Downloads --genre "Computer Science"`
 
 #### Full Usage Details
 ```
@@ -25,7 +26,7 @@ optional arguments:
   --all                 Download all available book (both PDFs and EPUBs)
   --only_pdf ONLY_PDF   Downloads only PDFs
   --only_epub ONLY_EPUB
-                        Downloads only EPUBs)
+                        Downloads only EPUBs
   --list_genres         Lists out available genres
   --list_books [LIST_BOOKS]
                         Lists available books (add argument to show book by specified genre
@@ -117,6 +118,22 @@ Available genre options:
 `python3 springer_downloader.py ../Downloads --genre "Computer Science"`
 
 will download all books in the computer science genre
+
+### List books in a genre
+`python3 springer_downloader.py ../../Downloads --list_books Medicine`                          
+
+returns:
+```
+List of available books:
+  1. Biomedical Informatics
+  2. Breast Cancer
+  3. Cardiovascular Biomechanics
+  4. Evidence-Based Critical Care
+  5. Evolutionary Thinking in Medicine
+  6. Primer on the Rheumatic Diseases
+  7. Spine Surgery
+  8. The ASCRS Textbook of Colon and Rectal Surgery
+```
 
 ## Sources:
 * https://group.springernature.com/gp/group/media/press-releases/freely-accessible-textbook-initiative-for-educators-and-students/17858180?utm_medium=social&utm_content=organic&utm_source=facebook&utm_campaign=SpringerNature_&sf232256230=1
