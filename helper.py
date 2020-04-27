@@ -90,8 +90,15 @@ def download_books(
     books = [b for b in books if selected_genre in b[5]]
     books = [b for b in books if selected_title in b[1]]
     count = 0
-    for url, title, author, edition, isbn, genre in tqdm.tqdm(books, disable=verbose):
+    for url, title, author, edition, isbn, genre in tqdm.tqdm(books, disable=(verbose or confirm_download)):
         count += 1
+        if confirm_download:
+            res = ""
+            while not res or res[0] not in ('y', 'n'):
+                res = input("Downloading '{}' : ({}/{}) Continue? (y/n) ".format(title, count, len(books)))
+
+            if 'n' == res[0]:
+                continue
         if verbose:
             print("Downloading '{}' : ({}/{})".format(title, count, len(books)))
         path = make_directories(os.path.join(output_folder, genre))
