@@ -3,6 +3,7 @@
 import os
 import requests
 import pandas as pd
+import time
 from tqdm import tqdm
 from helper import *
 
@@ -22,17 +23,27 @@ else:
 for url, title, author, edition, isbn, category in tqdm(books[['OpenURL', 'Book Title', 'Author', 'Edition', 'Electronic ISBN', 'English Package Name']].values):
     new_folder = create_relative_path_if_not_exist(os.path.join(folder, category))
 
-    r = requests.get(url)
-    new_url = r.url.replace('%2F','/').replace('/book/','/content/pdf/') + '.pdf'
     bookname = compose_bookname(title, author, edition, isbn)
     output_file = os.path.join(new_folder, bookname + '.pdf')
-    download_book(new_url, output_file)
 
-    # Download EPUB version too if exists
-    new_url = r.url.replace('%2F','/').replace('/book/','/download/epub/') + '.epub'
-    output_file = os.path.join(new_folder, bookname + '.epub')
-    request = requests.get(new_url, stream = True)
-    if request.status_code == 200:
-       download_book(new_url, output_file)
+    # If book already downloaded, skip it
+    if os.path.exists(output_file):
+        continue
+
+    try:
+        r = requests.get(url)
+        new_url = r.url.replace('%2F','/').replace('/book/','/content/pdf/') + '.pdf'
+        download_book(new_url, output_file)
+
+        # Download EPUB version too if exists
+        new_url = r.url.replace('%2F','/').replace('/book/','/download/epub/') + '.epub'
+        output_file = os.path.join(new_folder, bookname + '.epub')
+        request = requests.get(new_url, stream = True)
+        if request.status_code == 200:
+            download_book(new_url, output_file)
+    except:
+        print('\nProblem downloading: ' + title)
+        time.sleep(30)
+        continue
 
 print('\nFinish downloading.')
