@@ -11,8 +11,8 @@ from helper import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--folder', help='folder to store downloads')
-parser.add_argument('--pdf', action='store_true' , help='download PDF books')
-parser.add_argument('--epub', action='store_true' , help='download EPUB books')
+parser.add_argument('--pdf', action='store_true', help='download PDF books')
+parser.add_argument('--epub', action='store_true', help='download EPUB books')
 args = parser.parse_args()
 
 patches = []
@@ -50,7 +50,6 @@ books = books[
 
 for url, title, author, edition, isbn, category in tqdm(books.values):
     dest_folder = create_path(os.path.join(folder, category))
-    title = title.encode('ascii', 'ignore').decode('ascii')
     bookname = compose_bookname(title, author, edition, isbn)
     request = None
     for patch in patches:
@@ -58,12 +57,13 @@ for url, title, author, edition, isbn, category in tqdm(books.values):
             output_file = create_book_file(dest_folder, bookname, patch)
             if output_file is not None:
                 request = requests.get(url) if request is None else request
-                download_all_books(request, output_file, patch)
-        except (OSError, IOError, requests.exceptions.ConnectionError) as e:
+                download_book(request, output_file, patch)
+        except (OSError, IOError) as e:
             print(e)
+            title = title.encode('ascii', 'ignore').decode('ascii')
             print('* Problem downloading: {}, so skipping it.'.format(title))
             time.sleep(30)
-            request = None
+            request = None                    # Enforce new get request
             # then continue to download the next book
 
 print('\nFinish downloading.')

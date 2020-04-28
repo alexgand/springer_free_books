@@ -15,7 +15,7 @@ def create_book_file(base_path, bookname, patch):
     return output_file
 
 
-def download_book(url, book_path):
+def _download_book(url, book_path):
     if not os.path.exists(book_path):
         with requests.get(url, stream=True) as req:
             path = create_path('./tmp')
@@ -26,11 +26,11 @@ def download_book(url, book_path):
             shutil.move(tmp_file, book_path)
 
 
-def download_all_books(request, output_file, patch):
+def download_book(request, output_file, patch):
     new_url = request.url.replace('%2F','/').replace('/book/', patch['url']) + patch['ext']
     request = requests.get(new_url, stream=True)
     if request.status_code == 200:
-        download_book(new_url, output_file)
+        _download_book(new_url, output_file)
 
 
 replacements = {'/':'-', '\\':'-', ':':'-', '*':'', '>':'', '<':'', '?':'', \

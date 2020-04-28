@@ -10,11 +10,11 @@ Use the following command to download all PDF and EPUB books to the default down
 ```bash
 python3 main.py
 ```
-To download them to a subfolder of your choice, say `books`, type
+To download them to a subfolder of your choice, say `books`
 ```bash
 python3 main.py -f ./books
 ```
-You can download to an absolute path, say 'C:/ebooks/springer/'
+You can download to an absolute path, say `C:/ebooks/springer/`
 ```bash
 python3 main.py -f C:/ebooks/springer/
 ```
