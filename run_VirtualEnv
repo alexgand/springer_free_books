@@ -1,7 +1,7 @@
 @echo off
 
 ::-- Get Python major version
-for /f "tokens=2 delims=. " %f in ('python --version') do set majorVersion=%f
+for /f "tokens=2 delims=. " %%f in ('python --version') do set majorVersion=%%f
 
 ::-- Create virtual environment
 python -m venv .venv
