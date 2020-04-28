@@ -3,10 +3,10 @@
 ### Usage
 **Note**: If you want just one or two specific books, get the excel file [here](https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4) and manually download those. It took about 4 hours to complete the 409 english books (14 GB, both PDF and EPUB) on my machine.
 
-By default the script stores the books in `/downloads/` subfolder (created if not exists) according to the subject ("English Package Name" column of the excel file).
+By default the script stores the books in `./downloads` subfolder (created if not exists) according to the subject ("English Package Name" column of the excel file).
 
 #### Download all books (PDF and EPUB)
-Use the following command to download all PDF and EPUB books
+Use the following command to download all PDF and EPUB books to the default download folder `./downloads`
 ```python
 python3 main.py
 ```
