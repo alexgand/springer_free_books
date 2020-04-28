@@ -7,6 +7,13 @@ import time
 from tqdm import tqdm
 from helper import *
 
+
+
+with open("categories.txt") as file:
+    wanted_categories = file.readlines()
+
+wanted_categories = [line.strip() for line in wanted_categories]
+
 folder = create_relative_path_if_not_exist('downloads')
 
 table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4'
@@ -21,6 +28,10 @@ else:
 
 
 for url, title, author, edition, isbn, category in tqdm(books[['OpenURL', 'Book Title', 'Author', 'Edition', 'Electronic ISBN', 'English Package Name']].values):
+    
+    if category not in wanted_categories:
+        continue
+    
     new_folder = create_relative_path_if_not_exist(os.path.join(folder, category))
 
     bookname = compose_bookname(title, author, edition, isbn)
