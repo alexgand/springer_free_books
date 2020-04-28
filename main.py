@@ -2,19 +2,33 @@
 
 import os
 import requests
-import pandas as pd
 import time
+import argparse
+import pandas as pd
 from tqdm import tqdm
 from helper import *
-
-
 
 with open("categories.txt") as file:
     wanted_categories = file.readlines()
 
 wanted_categories = [line.strip() for line in wanted_categories]
 
-folder = create_relative_path_if_not_exist('downloads')
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', '--folder', help='folder to store downloads')
+parser.add_argument('--pdf', action='store_true', help='download PDF books')
+parser.add_argument('--epub', action='store_true', help='download EPUB books')
+args = parser.parse_args()
+
+patches = []
+if not args.pdf and not args.epub:
+    args.pdf = args.epub = True
+if args.pdf:
+    patches.append({'url':'/content/pdf/', 'ext':'.pdf'})
+if args.epub:
+    patches.append({'url':'/download/epub/', 'ext':'.epub'})
+
+folder = args.folder
+folder = create_path(folder) if folder else create_path('./downloads')
 
 table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4'
 table = 'table_' + table_url.split('/')[-1] + '.xlsx'
@@ -26,35 +40,26 @@ if not os.path.exists(table_path):
 else:
     books = pd.read_excel(table_path, index_col=0, header=0)
 
-
-for url, title, author, edition, isbn, category in tqdm(books[['OpenURL', 'Book Title', 'Author', 'Edition', 'Electronic ISBN', 'English Package Name']].values):
-    
+for url, title, author, edition, isbn, category in tqdm(books.values):
+  
     if category not in wanted_categories:
         continue
-    
-    new_folder = create_relative_path_if_not_exist(os.path.join(folder, category))
-
+        
+    dest_folder = create_path(os.path.join(folder, category))
     bookname = compose_bookname(title, author, edition, isbn)
-    output_file = os.path.join(new_folder, bookname + '.pdf')
-
-    # If book already downloaded, skip it
-    if os.path.exists(output_file):
-        continue
-
-    try:
-        r = requests.get(url)
-        new_url = r.url.replace('%2F','/').replace('/book/','/content/pdf/') + '.pdf'
-        download_book(new_url, output_file)
-
-        # Download EPUB version too if exists
-        new_url = r.url.replace('%2F','/').replace('/book/','/download/epub/') + '.epub'
-        output_file = os.path.join(new_folder, bookname + '.epub')
-        request = requests.get(new_url, stream = True)
-        if request.status_code == 200:
-            download_book(new_url, output_file)
-    except:
-        print('\nProblem downloading: ' + title)
-        time.sleep(30)
-        continue
+    request = None
+    for patch in patches:
+        try:
+            output_file = create_book_file(dest_folder, bookname, patch)
+            if output_file is not None:
+                request = requests.get(url) if request is None else request
+                download_book(request, output_file, patch)
+        except (OSError, IOError) as e:
+            print(e)
+            title = title.encode('ascii', 'ignore').decode('ascii')
+            print('* Problem downloading: {}, so skipping it.'.format(title))
+            time.sleep(30)
+            request = None                    # Enforce new get request
+            # then continue to download the next book
 
 print('\nFinish downloading.')
