@@ -11,22 +11,40 @@ Use the following command to download all PDF and EPUB books to the default down
 python3 main.py
 ```
 To download them to a subfolder of your choice, say `books`
-```bash
+```
 python3 main.py -f ./books
 ```
 You can download to an absolute path, say `C:/ebooks/springer/`
-```bash
+```
 python3 main.py -f C:/ebooks/springer/
 ```
 
 #### Download all books of specific format
 To download all PDF books only, run
-```bash
+```
 python3 main.py --pdf
 ```
-or all EPUB books only
-```bash
+or all EPUB books only,
+```
 python3 main.py --epub
+```
+
+#### Download only specific book categories
+You can download selective books by categories. Make sure category name with space(s) is enclosed in double quotation marks,  like so
+```
+python3 main.py -c Enginnering "CoMpuTer sciEnCe"
+```
+
+#### Download book selectively
+You can download books by indices (refer to the excel file for the titles)
+```
+python3 main.py -i 2 345 70 90 0 213
+```
+
+#### Verbose mode
+If you need to know what you are downloading, enable the verbose mode with `-v` option
+```
+python3 main.py -v -c "Behavioral Science and Psychology" -i 2 34 400
 ```
 
 ### Running in a virtual environment:
