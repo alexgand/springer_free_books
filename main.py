@@ -2,15 +2,25 @@
 
 import os
 import requests
-import pandas as pd
 import time
+import argparse
+import pandas as pd
 from tqdm import tqdm
 from helper import *
 
-patches = [
-    {'url':'/content/pdf/', 'ext':'.pdf'},
-    {'url':'/download/epub/', 'ext':'.epub'}
-]
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--pdf', action='store_true' , help='download PDF books', required=False)
+parser.add_argument('--epub', action='store_true' , help='download EPUB books', required=False)
+args = parser.parse_args()
+
+patches = []
+if not args.pdf and not args.epub:
+    args.pdf = args.epub = True
+if args.pdf:
+    patches.append({'url':'/content/pdf/', 'ext':'.pdf'})
+if args.epub:
+    patches.append({'url':'/download/epub/', 'ext':'.epub'})
 
 folder = create_relative_path_if_not_exist('downloads')
 

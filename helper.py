@@ -28,15 +28,15 @@ def download_book(url, book_path):
             shutil.move(tmp_file, book_path)
 
 
-replacements = {'/':'-', '\\':'-', ':':'-', '*':'', '>':'', '<':'', '?':'', \
-                '|':'', '"':''}
-
 def download_all_books(request, output_file, patch):
     new_url = request.url.replace('%2F','/').replace('/book/', patch['url']) + patch['ext']
     request = requests.get(new_url, stream=True)
     if request.status_code == 200:
         download_book(new_url, output_file)
 
+
+replacements = {'/':'-', '\\':'-', ':':'-', '*':'', '>':'', '<':'', '?':'', \
+                '|':'', '"':''}
 
 def compose_bookname(title, author, edition, isbn):
     bookname = title + ' - ' + author + ', ' + edition + ' - ' + isbn
