@@ -44,7 +44,7 @@ python3 main.py -i 2 345 70 90 0 213
 #### Verbose mode
 If you need to know what you are downloading, enable the verbose mode with `-v` option
 ```
-python3 main.py -v -c "Behavioral Science and Psychology" -i 2 34 400
+python3 main.py -v -c "Behavioral Science and Psychology" "chaos AD" UFO "Life science" -i 2 34 400
 ```
 You will get the following summary before the downloading starts
 ```
@@ -64,6 +64,10 @@ You will get the following summary before the downloading starts
 400             A Course in Rasch Measurement Theory                          Education
 
 13 titles ready to be downloaded...
+The following invalid book categories will be ignored:
+ 1. chaos AD
+ 2. UFO
+ 3. Life science
 ```
 
 ### Running in a virtual environment:
