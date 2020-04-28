@@ -7,6 +7,11 @@ import time
 from tqdm import tqdm
 from helper import *
 
+patches = [
+    {'url':'/content/pdf/', 'ext':'.pdf'},
+    {'url':'/download/epub/', 'ext':'.epub'}
+]
+
 folder = create_relative_path_if_not_exist('downloads')
 
 table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4'
@@ -21,29 +26,20 @@ else:
 
 
 for url, title, author, edition, isbn, category in tqdm(books[['OpenURL', 'Book Title', 'Author', 'Edition', 'Electronic ISBN', 'English Package Name']].values):
-    new_folder = create_relative_path_if_not_exist(os.path.join(folder, category))
-
+    dest_folder = create_relative_path_if_not_exist(os.path.join(folder, category))
+    title = title.encode('ascii', 'ignore').decode('ascii')
     bookname = compose_bookname(title, author, edition, isbn)
-    output_file = os.path.join(new_folder, bookname + '.pdf')
-
-    # If book already downloaded, skip it
-    if os.path.exists(output_file):
-        continue
-
-    try:
-        r = requests.get(url)
-        new_url = r.url.replace('%2F','/').replace('/book/','/content/pdf/') + '.pdf'
-        download_book(new_url, output_file)
-
-        # Download EPUB version too if exists
-        new_url = r.url.replace('%2F','/').replace('/book/','/download/epub/') + '.epub'
-        output_file = os.path.join(new_folder, bookname + '.epub')
-        request = requests.get(new_url, stream = True)
-        if request.status_code == 200:
-            download_book(new_url, output_file)
-    except:
-        print('\nProblem downloading: ' + title)
-        time.sleep(30)
-        continue
+    request = None
+    for patch in patches:
+        try:
+            output_file = create_book_file(dest_folder, bookname, patch)
+            if output_file is not None:
+                request = requests.get(url) if request is None else request
+                download_all_books(request, output_file, patch)
+        except (OSError, IOError, requests.exceptions.ConnectionError) as e:
+            print(e)
+            print('* Problem downloading: {}, so skipping it.'.format(title))
+            time.sleep(30)
+            # then continue to download the next book
 
 print('\nFinish downloading.')
