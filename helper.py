@@ -3,12 +3,10 @@ import requests
 import shutil
 
 
-def create_relative_path_if_not_exist(relative_path):
-    path = os.path.join(os.getcwd(), relative_path)
+def create_path(path):
     if not os.path.exists(path):
         os.makedirs(path)
     return path
-
 
 def create_book_file(base_path, bookname, patch):
     output_file = os.path.join(base_path, bookname + patch['ext'])
@@ -20,7 +18,7 @@ def create_book_file(base_path, bookname, patch):
 def download_book(url, book_path):
     if not os.path.exists(book_path):
         with requests.get(url, stream=True) as req:
-            path = create_relative_path_if_not_exist('tmp')
+            path = create_path('./tmp')
             tmp_file = os.path.join(path, '_-_temp_file_-_.bak')
             with open(tmp_file, 'wb') as out_file:
                 shutil.copyfileobj(req.raw, out_file)

@@ -10,6 +10,7 @@ from helper import *
 
 
 parser = argparse.ArgumentParser()
+parser.add_argument('-f', '--folder', help='folder to store downloads')
 parser.add_argument('--pdf', action='store_true' , help='download PDF books', required=False)
 parser.add_argument('--epub', action='store_true' , help='download EPUB books', required=False)
 args = parser.parse_args()
@@ -22,7 +23,8 @@ if args.pdf:
 if args.epub:
     patches.append({'url':'/download/epub/', 'ext':'.epub'})
 
-folder = create_relative_path_if_not_exist('downloads')
+folder = args.folder
+folder = create_path(folder) if folder else create_path('./downloads')
 
 table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4'
 table = 'table_' + table_url.split('/')[-1] + '.xlsx'
@@ -35,8 +37,19 @@ else:
     books = pd.read_excel(table_path, index_col=0, header=0)
 
 
-for url, title, author, edition, isbn, category in tqdm(books[['OpenURL', 'Book Title', 'Author', 'Edition', 'Electronic ISBN', 'English Package Name']].values):
-    dest_folder = create_relative_path_if_not_exist(os.path.join(folder, category))
+books = books[
+    [
+      'OpenURL',
+      'Book Title',
+      'Author',
+      'Edition',
+      'Electronic ISBN',
+      'English Package Name'
+    ]
+]
+
+for url, title, author, edition, isbn, category in tqdm(books.values):
+    dest_folder = create_path(os.path.join(folder, category))
     title = title.encode('ascii', 'ignore').decode('ascii')
     bookname = compose_bookname(title, author, edition, isbn)
     request = None
