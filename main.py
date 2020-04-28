@@ -11,8 +11,8 @@ from helper import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--folder', help='folder to store downloads')
-parser.add_argument('--pdf', action='store_true' , help='download PDF books', required=False)
-parser.add_argument('--epub', action='store_true' , help='download EPUB books', required=False)
+parser.add_argument('--pdf', action='store_true' , help='download PDF books')
+parser.add_argument('--epub', action='store_true' , help='download EPUB books')
 args = parser.parse_args()
 
 patches = []
