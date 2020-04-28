@@ -12,6 +12,8 @@ Now updated to also download epub files if it's available.
 
 If you want just one or two specific books, get the excel file from the folowing link and download just those: https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4
 
+If you want just the subset of the subjects, then delete all subjects from `categories.txt` that you do not want to download.
+
 It took about 4 hours to complete the 409 english books (14 GB, both PDF and epub) on my machine.
 
 ### Usage in a virtual environment:
