@@ -24,7 +24,7 @@ To download all PDF books only, run
 ```bash
 python3 main.py --pdf
 ```
-or all EPUB books only,
+or all EPUB books only
 ```bash
 python3 main.py --epub
 ```

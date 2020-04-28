@@ -5,24 +5,29 @@ import requests
 import time
 import argparse
 import pandas as pd
-from tqdm import tqdm
 from helper import *
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--folder', help='folder to store downloads')
-parser.add_argument('--pdf', action='store_true', help='download PDF books')
-parser.add_argument('--epub', action='store_true', help='download EPUB books')
+parser.add_argument(
+    '--pdf', action='store_true', help='download PDF books'
+)
+parser.add_argument(
+    '--epub', action='store_true', help='download EPUB books'
+)
+parser.add_argument(
+    '-c','--category', nargs='+', dest='category',
+    help='book category/categories to download'
+)
+parser.add_argument(
+    '-i','--index', nargs='+', dest='book_index',
+    help='list of book indices to download'
+)
+parser.add_argument(
+    '-v','--verbose', action='store_true', help='show more details'
+)
+
 args = parser.parse_args()
-
-patches = []
-if not args.pdf and not args.epub:
-    args.pdf = args.epub = True
-if args.pdf:
-    patches.append({'url':'/content/pdf/', 'ext':'.pdf'})
-if args.epub:
-    patches.append({'url':'/download/epub/', 'ext':'.epub'})
-
 folder = args.folder
 folder = create_path(folder) if folder else create_path('./downloads')
 
@@ -36,7 +41,6 @@ if not os.path.exists(table_path):
 else:
     books = pd.read_excel(table_path, index_col=0, header=0)
 
-
 books = books[
     [
       'OpenURL',
@@ -48,22 +52,30 @@ books = books[
     ]
 ]
 
-for url, title, author, edition, isbn, category in tqdm(books.values):
-    dest_folder = create_path(os.path.join(folder, category))
-    bookname = compose_bookname(title, author, edition, isbn)
-    request = None
-    for patch in patches:
-        try:
-            output_file = create_book_file(dest_folder, bookname, patch)
-            if output_file is not None:
-                request = requests.get(url) if request is None else request
-                download_book(request, output_file, patch)
-        except (OSError, IOError) as e:
-            print(e)
-            title = title.encode('ascii', 'ignore').decode('ascii')
-            print('* Problem downloading: {}, so skipping it.'.format(title))
-            time.sleep(30)
-            request = None                    # Enforce new get request
-            # then continue to download the next book
+patches = []
+indices = ()
+invalid_categories = []
+if not args.pdf and not args.epub:
+    args.pdf = args.epub = True
+if args.pdf:
+    patches.append({'url':'/content/pdf/', 'ext':'.pdf'})
+if args.epub:
+    patches.append({'url':'/download/epub/', 'ext':'.epub'})
+if args.book_index != None:
+    indices = remove_duplicate_tuples(
+        tuple([
+            i for i in map(int, args.book_index)
+            if 0 <= i < len(books.index)
+        ])
+    )
+if args.category != None:
+    selected_indices, invalid_categories = indices_of_categories(
+        args.category, books
+    )
+    indices = remove_duplicate_tuples(indices + selected_indices)
+
+books = filter_books(books, sorted(indices))
+print_summary(books, args, invalid_categories)
+download_selected_books(books, folder, patches)
 
 print('\nFinish downloading.')
