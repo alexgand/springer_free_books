@@ -7,25 +7,25 @@ By default the script stores the books in `./downloads` subfolder (created if no
 
 #### Download all books (PDF and EPUB)
 Use the following command to download all PDF and EPUB books to the default download folder `./downloads`
-```python
+```bash
 python3 main.py
 ```
 To download them to a subfolder of your choice, say `books`, type
-```python
+```bash
 python3 main.py -f ./books
 ```
 You can download to an absolute path, say 'C:/ebooks/springer/'
-```python
+```bash
 python3 main.py -f C:/ebooks/springer/
 ```
 
 #### Download all books of specific format
 To download all PDF books only, run
-```python
+```bash
 python3 main.py --pdf
 ```
 or all EPUB books only,
-```python
+```bash
 python3 main.py --epub
 ```
 
