@@ -1,9 +1,9 @@
 ## Python script to download all Springer books released for free during the 2020 COVID-19 quarantine
 
 ### Usage
-**Note**: If you want just one or two specific books, get the excel file [here](https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4) and manually download those. It took about 4 hours to complete the 409 english books (14 GB, both PDF and EPUB) on my machine.
+**Note**: If you want just one or two specific books, get the excel file [here](https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4) and manually download those or use the script to help you download (see **Download book selectively** sub-section). It took about 4 hours to complete the 409 english books (14 GB, both PDF and EPUB) on my machine.
 
-By default the script stores the books in `./downloads` subfolder (created if not exists) according to the subject ("English Package Name" column of the excel file).
+By default the script stores the books in `./downloads` subfolder according to the subject ("English Package Name" column of the excel file).
 
 #### Download all books (PDF and EPUB)
 Use the following command to download all PDF and EPUB books to the default download folder `./downloads`
@@ -24,7 +24,7 @@ To download all PDF books only, run
 ```
 python3 main.py --pdf
 ```
-or all EPUB books only,
+or all EPUB books only
 ```
 python3 main.py --epub
 ```
@@ -45,6 +45,25 @@ python3 main.py -i 2 345 70 90 0 213
 If you need to know what you are downloading, enable the verbose mode with `-v` option
 ```
 python3 main.py -v -c "Behavioral Science and Psychology" -i 2 34 400
+```
+You will get the following summary before the downloading starts
+```
+                                          Book Title               English Package Name
+2                                  All of Statistics         Mathematics and Statistics
+34                            Essential Astrophysics              Physics and Astronomy
+37       International Perspectives on Psychotherapy  Behavioral Science and Psychology
+40                         Applied Behavior Analysis  Behavioral Science and Psychology
+70                          Psychology of Perception  Behavioral Science and Psychology
+95             Handbook of Consumer Finance Research  Behavioral Science and Psychology
+311       Clinical Methods in Medical Family Therapy  Behavioral Science and Psychology
+313                           Motivation and Action   Behavioral Science and Psychology
+381                          Perceptual Organization  Behavioral Science and Psychology
+396  Evidence-Based Practice in Clinical Social Work  Behavioral Science and Psychology
+397                 Foundations of Behavioral Health  Behavioral Science and Psychology
+398                      Social Psychology in Action  Behavioral Science and Psychology
+400             A Course in Rasch Measurement Theory                          Education
+
+13 titles ready to be downloaded...
 ```
 
 ### Running in a virtual environment:
