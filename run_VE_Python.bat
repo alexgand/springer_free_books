@@ -1,6 +1,9 @@
 @echo off
 
-::--- Create virtual environment
+::-- Get Python major version
+for /f "tokens=2 delims=. " %f in ('python --version') do set majorVersion=%f
+
+::-- Create virtual environment
 python -m venv .venv
 
 ::--- Activate virtual environment
@@ -10,7 +13,11 @@ call .venv\Scripts\activate.bat
 python -m pip install --upgrade pip
 
 ::-- Installing requirements at virtual environment
-pip install -r requirements.txt
+if "%majorVersion%"=="2" (
+  pip install -r requirements2x.txt
+) else (
+  pip install -r requirements.txt
+)
 
 ::-- Running main program
 python main.py
