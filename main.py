@@ -40,6 +40,7 @@ for url, title, author, edition, isbn, category in tqdm(books[['OpenURL', 'Book 
             print(e)
             print('* Problem downloading: {}, so skipping it.'.format(title))
             time.sleep(30)
+            request = None
             # then continue to download the next book
 
 print('\nFinish downloading.')
