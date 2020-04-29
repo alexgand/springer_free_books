@@ -7,44 +7,44 @@ By default the script stores the books in `./downloads` subfolder according to t
 
 #### Download all books (PDF and EPUB)
 Use the following command to download all PDF and EPUB books to the default download folder `./downloads`
-```
+```bash
 python3 main.py
 ```
 To download them to a subfolder of your choice, say `books`
-```
+```bash
 python3 main.py -f ./books
 ```
 You can download to an absolute path, say `C:/ebooks/springer/`
-```
+```bash
 python3 main.py -f C:/ebooks/springer/
 ```
 
 #### Download all books of specific format
 To download all PDF books only, run
-```
+```bash
 python3 main.py --pdf
 ```
 or all EPUB books only
-```
+```bash
 python3 main.py --epub
 ```
 
 #### Download only specific book categories
 You can download selective books by categories. Make sure category name with space(s) is enclosed in double quotation marks,  like so
-```
+```bash
 python3 main.py -c Enginnering "CoMpuTer sciEnCe"
 ```
 The category name is case-insensitive.
 
 #### Download book selectively
 You can download books by indices (refer to the excel file for the titles)
-```
+```bash
 python3 main.py -i 2 345 70 90 0 213
 ```
 
 #### Verbose mode
 If you need to know what you are downloading, enable the verbose mode with `-v` option
-```
+```bash
 python3 main.py -v -c "Behavioral science and psychology" "chaos AD" UFO "Life science" -i 2 34 400
 ```
 You will get the following summary before the downloading starts
@@ -73,7 +73,7 @@ The following invalid book categories will be ignored:
 
 ### Running in a virtual environment:
 
-```
+```bash
 python3 -m venv .venv
 . .venv/bin/activate
 pip install -r requirements.txt
@@ -82,7 +82,7 @@ python3 main.py
 
 ### Virtual environment on Windows (Python 3.x):
 
-```
+```bash
 python -m venv .venv
 .venv\Scripts\activate.bat
 pip install -r requirements.txt
@@ -90,7 +90,7 @@ python main.py
 ```
 
 ### Virtual environment on Windows (Python 2.7.x):
-```
+```bash
 python -m virtualenv .venv
 .venv\Scripts\activate.bat
 pip install -r requirements2x.txt
@@ -121,4 +121,4 @@ You can run the scripts like that:
 docker build . -t springer-image
 docker run --rm -v [local_download_folder]:/app/downloads springer-image
 ```
-and the downloads will be at [`local_download_folder`]
+and the downloads will be at [`local_download_folder`].
