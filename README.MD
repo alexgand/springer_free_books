@@ -58,8 +58,8 @@ python main.py
 ### Virtual environment on Windows (auto-detects Python version):
 Just double-click the run_VirtualEnv.bat file from Windows Explorer,
 or type-in its name at the command-line and press ENTER.
-Do install Python first, either from (python.org)[http://python.org]
-or from the (Microsoft Store for Windows 10)[https://www.microsoft.com/el-gr/search?q=python].
+Do install Python first, either from [python.org](http://python.org)
+or from the [Microsoft Store for Windows 10](https://www.microsoft.com/el-gr/search?q=python).
 
 ### Source:
 * https://group.springernature.com/gp/group/media/press-releases/freely-accessible-textbook-initiative-for-educators-and-students/17858180?utm_medium=social&utm_content=organic&utm_source=facebook&utm_campaign=SpringerNature_&sf232256230=1
