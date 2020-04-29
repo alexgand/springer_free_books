@@ -71,7 +71,7 @@ The following invalid book categories will be ignored:
  3. Life science
 ```
 
-### Running in a virtual environment (Bash commands):
+### Running in a virtual environment:
 
 ```bash
 python3 -m venv .venv
