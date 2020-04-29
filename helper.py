@@ -51,7 +51,7 @@ def print_summary(books, args, invalid_categories):
 
 
 def filter_books(books, indices):
-    if len(indices) is 0:
+    if len(indices) == 0:
         # If no books selected, then select all books
         indices = tuple(range(0, len(books.index)))
     # Filter books and return it
