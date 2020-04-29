@@ -58,6 +58,8 @@ python main.py
 ### Virtual environment on Windows (auto-detects Python version):
 Just double-click the run_VirtualEnv.bat file from Windows Explorer,
 or type-in its name at the command-line and press ENTER.
+Do install Python first, either from [http://python.org](python.org)
+or from the [https://www.microsoft.com/el-gr/search?q=python](Microsoft Store on Windows 10).
 
 ### Source:
 * https://group.springernature.com/gp/group/media/press-releases/freely-accessible-textbook-initiative-for-educators-and-students/17858180?utm_medium=social&utm_content=organic&utm_source=facebook&utm_campaign=SpringerNature_&sf232256230=1
@@ -75,8 +77,8 @@ git clone https://github.com/alexgand/springer_free_books.git
 cd springer_free_books
 mkdir downloads
 ```
-You can run the scripts like that:
 
+You can run the scripts like that:
 ```bash
 docker build . -t springer-image
 docker run --rm -v [local_download_folder]:/app/downloads springer-image
