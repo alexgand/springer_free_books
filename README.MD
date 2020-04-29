@@ -7,7 +7,7 @@ By default the script stores the books in `./downloads` subfolder according to t
 
 #### Download all books (PDF and EPUB)
 Use the following command to download all PDF and EPUB books to the default download folder `./downloads`
-```bash
+```
 python3 main.py
 ```
 To download them to a subfolder of your choice, say `books`
@@ -34,6 +34,7 @@ You can download selective books by categories. Make sure category name with spa
 ```
 python3 main.py -c Enginnering "CoMpuTer sciEnCe"
 ```
+The category name is case-insensitive.
 
 #### Download book selectively
 You can download books by indices (refer to the excel file for the titles)
@@ -44,7 +45,7 @@ python3 main.py -i 2 345 70 90 0 213
 #### Verbose mode
 If you need to know what you are downloading, enable the verbose mode with `-v` option
 ```
-python3 main.py -v -c "Behavioral Science and Psychology" "chaos AD" UFO "Life science" -i 2 34 400
+python3 main.py -v -c "Behavioral science and psychology" "chaos AD" UFO "Life science" -i 2 34 400
 ```
 You will get the following summary before the downloading starts
 ```
@@ -121,25 +122,4 @@ docker build . -t springer-image
 docker run --rm -v [local_download_folder]:/app/downloads springer-image
 ```
 
-and the downloads will be at [local_download_folder]
-
-
-
-## Docker container to do all the work
-
-Considering you cloned the repo in a folder, as:
-```bash
-cd \home\[user]\workspace`
-git clone https://github.com/alexgand/springer_free_books.git
-cd springer_free_books
-mkdir downloads
-```
-You can run the scripts like that:
-
-```bash
-docker build . -t springer-image
-docker run --rm -v [local_download_folder]:/app/downloads springer-image
-```
-
-and the downloads will be at [local_download_folder]
-
+and the downloads will be at [`local_download_folder`]

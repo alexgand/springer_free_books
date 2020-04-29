@@ -1,4 +1,5 @@
 import os
+import re
 import requests
 import shutil
 import pandas as pd
@@ -14,6 +15,9 @@ def create_path(path):
     return path
 
 def create_book_file(base_path, bookname, patch):
+    """
+    Create a file to store book content and return the file reference
+    """
     output_file = os.path.join(base_path, bookname + patch['ext'])
     if os.path.exists(output_file):
         return None
@@ -21,31 +25,18 @@ def create_book_file(base_path, bookname, patch):
 
 
 def remove_duplicate_tuples(lst):
-    return tuple(set([i for i in lst]))
-
-
-def normalize_strings(strings, standard_strings):
-    return [
-        name.encode('ascii', 'ignore').decode('ascii')
-        for name in standard_strings
-        for s in strings
-        if s.capitalize() == name.capitalize()
-    ]
-
-
-def not_in(string1, string2):
-    return [
-        s1 for s1 in string1
-        if(s1.capitalize() not in [s2.capitalize() for s2 in string2])
-    ]
+    return tuple(set(lst))
 
 
 def print_invalid_categories(invalid_categories):
     if len(invalid_categories) > 0:
+        invalid_categories = invalid_categories
         s = 'categories' if len(invalid_categories) > 1 else 'category'
         print("The following invalid book {} will be ignored:".format(s))
         for i, name in enumerate(invalid_categories):
-            print(" {}. {}".format((i + 1), name))
+            print(" {}. {}".format(
+                (i + 1), name.encode('ascii', 'ignore').decode('ascii'))
+            )
         print('')
 
 
@@ -68,14 +59,16 @@ def filter_books(books, indices):
 
 
 def indices_of_categories(categories, books):
-    categories = tuple(categories)
-    valid_categories = books[~books.duplicated([CATEGORY])][CATEGORY]
+    invalid_categories = []
     t = pd.Series(np.zeros(len(books.index), dtype=bool))
-    selected_categories = normalize_strings(categories, valid_categories)
-    invalid_categories = not_in(categories, selected_categories)
-    for c in selected_categories:
-        if c in valid_categories.tolist():
-            t = t | (books[CATEGORY] == c)
+    for c in categories:
+        tick_list = books[CATEGORY].str.contains(
+            '^' + c + '$', flags=re.IGNORECASE, regex=True
+        )
+        if tick_list.any():
+            t = t | tick_list
+        else:
+            invalid_categories.append(c)
     return tuple(books.index[t].tolist()), invalid_categories
 
 

@@ -74,6 +74,11 @@ if args.category != None:
     )
     indices = remove_duplicate_tuples(indices + selected_indices)
 
+if len(indices) == 0 and (len(invalid_categories) > 0 or args.book_index):
+    print_invalid_categories(invalid_categories)
+    print('No book to download.')
+    exit()
+
 books = filter_books(books, sorted(indices))
 print_summary(books, args, invalid_categories)
 download_selected_books(books, folder, patches)
