@@ -29,6 +29,18 @@ or all EPUB books only,
 python3 main.py --epub
 ```
 
+#### Compress every downloaded book
+To compress every book you want to download, give the `--zip` argument. You can compress all formats or just a specific format, so each one of the following commands is valid
+```bash
+python3 main.py --zip
+```
+```bash
+python3 main.py --pdf --zip
+```
+```bash
+python3 main.py --epub --zip
+```
+
 ### Running in a virtual environment:
 
 ```bash

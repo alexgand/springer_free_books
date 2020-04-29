@@ -13,15 +13,17 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--folder', help='folder to store downloads')
 parser.add_argument('--pdf', action='store_true', help='download PDF books')
 parser.add_argument('--epub', action='store_true', help='download EPUB books')
+parser.add_argument('--zip', action='store_true', help='compress downloaded books')
 args = parser.parse_args()
 
 patches = []
+compress = (True if args.zip else False)
 if not args.pdf and not args.epub:
     args.pdf = args.epub = True
 if args.pdf:
-    patches.append({'url':'/content/pdf/', 'ext':'.pdf'})
+    patches.append({'url':'/content/pdf/', 'ext':'.pdf', 'zip' : compress})
 if args.epub:
-    patches.append({'url':'/download/epub/', 'ext':'.epub'})
+    patches.append({'url':'/download/epub/', 'ext':'.epub', 'zip' : compress})
 
 folder = args.folder
 folder = create_path(folder) if folder else create_path('./downloads')
