@@ -55,7 +55,7 @@ pip install -r requirements2x.txt
 python main.py
 ```
 
-### Virtual environment on Windows (automated):
+### Virtual environment on Windows (auto-detects Python version):
 Just double-click the run_VirtualEnv.bat file from Windows Explorer,
 or type-in its name at the command-line and press ENTER.
 
