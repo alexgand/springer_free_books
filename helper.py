@@ -34,9 +34,7 @@ def print_invalid_categories(invalid_categories):
         s = 'categories' if len(invalid_categories) > 1 else 'category'
         print("The following invalid book {} will be ignored:".format(s))
         for i, name in enumerate(invalid_categories):
-            print(" {}. {}".format(
-                (i + 1), name.encode('ascii', 'ignore').decode('ascii'))
-            )
+            print(" {}. {}".format((i + 1), name))
         print('')
 
 

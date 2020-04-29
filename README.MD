@@ -73,7 +73,7 @@ The following invalid book categories will be ignored:
 
 ### Running in a virtual environment:
 
-```bash
+```
 python3 -m venv .venv
 . .venv/bin/activate
 pip install -r requirements.txt
@@ -115,11 +115,10 @@ git clone https://github.com/alexgand/springer_free_books.git
 cd springer_free_books
 mkdir downloads
 ```
-You can run the scripts like that:
 
+You can run the scripts like that:
 ```bash
 docker build . -t springer-image
 docker run --rm -v [local_download_folder]:/app/downloads springer-image
 ```
-
 and the downloads will be at [`local_download_folder`]
