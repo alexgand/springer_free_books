@@ -30,7 +30,9 @@ def remove_duplicate_tuples(lst):
 
 def print_invalid_categories(invalid_categories):
     if len(invalid_categories) > 0:
-        invalid_categories = invalid_categories
+        series = pd.Series(invalid_categories)
+        # Remove duplicates
+        invalid_categories = series[~series.duplicated()]
         s = 'categories' if len(invalid_categories) > 1 else 'category'
         print("The following invalid book {} will be ignored:".format(s))
         for i, name in enumerate(invalid_categories):
@@ -89,6 +91,16 @@ def download_book(request, output_file, patch):
 
 
 def download_selected_books(books, folder, patches):
+    books = books[
+        [
+          'OpenURL',
+          'Book Title',
+          'Author',
+          'Edition',
+          'Electronic ISBN',
+          'English Package Name'
+        ]
+    ]
     for url, title, author, edition, isbn, category in tqdm(books.values):
         dest_folder = create_path(os.path.join(folder, category))
         bookname = compose_bookname(title, author, edition, isbn)

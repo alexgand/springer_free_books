@@ -41,17 +41,6 @@ if not os.path.exists(table_path):
 else:
     books = pd.read_excel(table_path, index_col=0, header=0)
 
-books = books[
-    [
-      'OpenURL',
-      'Book Title',
-      'Author',
-      'Edition',
-      'Electronic ISBN',
-      'English Package Name'
-    ]
-]
-
 patches = []
 indices = ()
 invalid_categories = []
