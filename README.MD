@@ -122,3 +122,6 @@ docker build . -t springer-image
 docker run --rm -v [local_download_folder]:/app/downloads springer-image
 ```
 and the downloads will be at [`local_download_folder`].
+
+## Troubleshooting
+On macOS, if the script produces a `[SSL: CERTIFICATE_VERIFY_FAILED]` error, then security certificates may need to be installed. Instructions for doing so can be found [here](https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org). If that doesn't work, see alternate instructions [here](https://stackoverflow.com/questions/44649449/brew-installation-of-python-3-6-1-ssl-certificate-verify-failed-certificate/44649450#44649450).
