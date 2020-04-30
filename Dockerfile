@@ -1,9 +1,9 @@
-FROM python:3
-
-COPY *.py /app/
-COPY requirements.txt /app/
+FROM python:3.8-slim-buster
 
 WORKDIR /app
 
-RUN chmod 740 ./*.py && mkdir ./downloads/ && pip install -r requirements.txt
-CMD ["/app/main.py"]
+COPY requirements.txt /app/
+RUN pip install -r requirements.txt
+COPY *.py /app/
+
+ENTRYPOINT ["python", "main.py"]
