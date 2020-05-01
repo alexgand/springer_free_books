@@ -6,10 +6,13 @@ import time
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+from deco import concurrent, synchronized
 
 BOOK_TITLE = 'Book Title'
 CATEGORY   = 'English Package Name'
 MAX_FILENAME_LEN = 145
+
+njobs = 1
 
 def create_path(path):
     if not os.path.exists(path):
@@ -82,6 +85,7 @@ def download_book(url, book_path):
             shutil.move(tmp_file, book_path)
 
 
+@concurrent(processes=njobs)
 def download_book_if_exists(request, output_file, patch):
     new_url = request.url.replace('%2F','/').replace('/book/', patch['url']) + patch['ext']
     request = requests.get(new_url, stream=True)
@@ -89,6 +93,7 @@ def download_book_if_exists(request, output_file, patch):
         download_book(new_url, output_file)
 
 
+@synchronized
 def download_books(books, folder, patches):
     books = books[
         [
@@ -136,3 +141,4 @@ def compose_bookname(title, author, edition, isbn):
         bookname = title[:(MAX_FILENAME_LEN - 20)] + ' - ' + isbn
     bookname = bookname.encode('ascii', 'ignore').decode('ascii')
     return "".join([replacements.get(c, c) for c in bookname])
+
