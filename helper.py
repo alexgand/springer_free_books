@@ -148,10 +148,10 @@ def compose_bookname(title, author, edition, isbn, max_length):
 
 
 def get_random_string(length):
-    sha512 = hashlib.sha512(str(time.time()))
+    sha512 = hashlib.sha512(str(time.time()).encode('utf-8'))
     name = ''
     for i in range(0, (length / 128 + 1)):
-        sha512.update(str(time.time()))
+        sha512.update(str(time.time()).encode('utf-8'))
         name = name + sha512.hexdigest()
     return name[:length]
 
