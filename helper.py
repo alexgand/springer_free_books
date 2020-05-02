@@ -147,11 +147,12 @@ def compose_bookname(title, author, edition, isbn, max_length):
     return "".join([replacements.get(c, c) for c in bookname])
 
 
-def get_random_string(length):
-    sha512 = hashlib.sha512(str(time.time()).encode('utf-8'))
+def create_random_hex_string(length):
+    t = str(time.time()).encode('utf-8')
+    sha512 = hashlib.sha512(t)
     name = ''
     for i in range(0, int(length / 128 + 1)):
-        sha512.update(str(time.time()).encode('utf-8'))
+        sha512.update(name + t)
         name = name + sha512.hexdigest()
     return name[:length]
 
@@ -160,16 +161,16 @@ def get_max_filename_length(path):
     hi = mid = 1024
     lo = 0
     while mid > lo:
-        name = get_random_string(mid)
+        name = create_random_hex_string(mid)
         try:
             test_file = os.path.join(path, name + '.temp')
-            with open(test_file, 'wb') as out_file:
+            with open(test_file, 'w') as out_file:
                 out_file.write('Hello, world!')
             lo = mid
             os.remove(test_file)
-        except BaseException as e:
+        except (OSError, IOError) as e:
             if e.errno == errno.EACCES:
-                name = get_random_string(mid)
+                name = create_random_hex_string(mid)
                 continue
             hi = mid
         mid = int((hi + lo) / 2)
