@@ -70,12 +70,8 @@ The following invalid book categories will be ignored:
  2. UFO
  3. Life science
 ```
-### Virtual environment on Windows (auto-detects Python version):
-Just double-click the `run_VirtualEnv.bat` file from Windows Explorer, or type-in its name at the command-line and press ENTER.
-Do install Python first, either from [python.org](https://www.python.org/downloads/)
-or from the [Microsoft Store for Windows 10](https://www.microsoft.com/en-us/search?q=python).
 
-### Running in a virtual environment:
+### Running in a virtual environment (Bash commands):
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
@@ -83,8 +79,13 @@ pip install -r requirements.txt
 python3 main.py
 ```
 
+### Virtual environment on Windows (auto-detects Python version):
+Just double-click the `run_VirtualEnv.bat` file from Windows Explorer, or type-in its name at the command-line and press ENTER.
+Do install Python first, either from [python.org](https://www.python.org/downloads/)
+or from the [Microsoft Store for Windows 10](https://www.microsoft.com/en-us/search?q=python).
+
 ### Virtual environment on Windows (Python 3.x):
-```bash
+```winbatch
 python -m venv .venv
 .venv\Scripts\activate.bat
 pip install -r requirements.txt
@@ -92,7 +93,7 @@ python main.py
 ```
 
 ### Virtual environment on Windows (Python 2.7.x):
-```bash
+```winbatch
 python -m virtualenv .venv
 .venv\Scripts\activate.bat
 pip install -r requirements2x.txt
