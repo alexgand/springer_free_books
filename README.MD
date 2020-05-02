@@ -70,9 +70,12 @@ The following invalid book categories will be ignored:
  2. UFO
  3. Life science
 ```
+### Virtual environment on Windows (auto-detects Python version):
+Just double-click the run_VirtualEnv.bat file from Windows Explorer, or type-in its name at the command-line and press ENTER.
+Do install Python first, either from [python.org](https://www.python.org/downloads/)
+or from the [Microsoft Store for Windows 10](https://www.microsoft.com/el-gr/search?q=python).
 
 ### Running in a virtual environment:
-
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
@@ -81,7 +84,6 @@ python3 main.py
 ```
 
 ### Virtual environment on Windows (Python 3.x):
-
 ```bash
 python -m venv .venv
 .venv\Scripts\activate.bat
@@ -96,8 +98,6 @@ python -m virtualenv .venv
 pip install -r requirements2x.txt
 python main.py
 ```
-
-
 
 ### Source:
 * https://group.springernature.com/gp/group/media/press-releases/freely-accessible-textbook-initiative-for-educators-and-students/17858180?utm_medium=social&utm_content=organic&utm_source=facebook&utm_campaign=SpringerNature_&sf232256230=1
