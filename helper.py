@@ -152,12 +152,16 @@ def create_random_hex_string(length):
     sha512 = hashlib.sha512(t)
     name = ''
     for i in range(0, int(length / 128 + 1)):
-        sha512.update(name + t)
+        sha512.update(name.encode('utf-8') + t)
         name = name + sha512.hexdigest()
     return name[:length]
 
 
 def get_max_filename_length(path):
+    """
+    Use binary search to determine the maximum filename length
+    possible for the given path
+    """
     hi = mid = 1024
     lo = 0
     while mid > lo:
