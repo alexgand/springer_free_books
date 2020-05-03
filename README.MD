@@ -32,7 +32,7 @@ python3 main.py --epub
 #### Download only specific book categories
 You can download selective books by categories. Make sure category name with space(s) is enclosed in double quotation marks,  like so
 ```bash
-python3 main.py -c Enginnering "CoMpuTer sciEnCe"
+python3 main.py -c Engineering "CoMpuTer sciEnCe"
 ```
 The category name is case-insensitive.
 
@@ -111,7 +111,7 @@ Thanks Springer!
 
 Considering you cloned the repo in a folder, as:
 ```bash
-cd \home\[user]\workspace`
+cd \home\[user]\workspace
 git clone https://github.com/alexgand/springer_free_books.git
 cd springer_free_books
 mkdir downloads
