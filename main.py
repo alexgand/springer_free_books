@@ -30,7 +30,7 @@ parser.add_argument(
 args = parser.parse_args()
 folder = create_path(args.folder if args.folder else './downloads')
 
-table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4'
+table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/'
 table = 'table_' + table_url.split('/')[-1] + '.xlsx'
 table_path = os.path.join(folder, table)
 if not os.path.exists(table_path):
