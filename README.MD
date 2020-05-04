@@ -32,7 +32,7 @@ python3 main.py --epub
 #### Download only specific book categories
 You can download selective books by categories. Make sure category name with space(s) is enclosed in double quotation marks,  like so
 ```bash
-python3 main.py -c Enginnering "CoMpuTer sciEnCe"
+python3 main.py -c Engineering "CoMpuTer sciEnCe"
 ```
 The category name is case-insensitive.
 
@@ -71,8 +71,7 @@ The following invalid book categories will be ignored:
  3. Life science
 ```
 
-### Running in a virtual environment:
-
+### Running in a virtual environment (Bash commands):
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
@@ -80,9 +79,13 @@ pip install -r requirements.txt
 python3 main.py
 ```
 
-### Virtual environment on Windows (Python 3.x):
+### Virtual environment on Windows (auto-detects Python version):
+Just double-click the `run_VirtualEnv.bat` file from Windows Explorer, or type-in its name at the command-line and press ENTER.
+Do install Python first, either from [python.org](https://www.python.org/downloads/)
+or from the [Microsoft Store for Windows 10](https://www.microsoft.com/en-us/search?q=python).
 
-```bash
+### Virtual environment on Windows (Python 3.x):
+```winbatch
 python -m venv .venv
 .venv\Scripts\activate.bat
 pip install -r requirements.txt
@@ -90,14 +93,12 @@ python main.py
 ```
 
 ### Virtual environment on Windows (Python 2.7.x):
-```bash
+```winbatch
 python -m virtualenv .venv
 .venv\Scripts\activate.bat
 pip install -r requirements2x.txt
 python main.py
 ```
-
-
 
 ### Source:
 * https://group.springernature.com/gp/group/media/press-releases/freely-accessible-textbook-initiative-for-educators-and-students/17858180?utm_medium=social&utm_content=organic&utm_source=facebook&utm_campaign=SpringerNature_&sf232256230=1
@@ -110,7 +111,7 @@ Thanks Springer!
 
 Considering you cloned the repo in a folder, as:
 ```bash
-cd \home\[user]\workspace`
+cd \home\[user]\workspace
 git clone https://github.com/alexgand/springer_free_books.git
 cd springer_free_books
 mkdir downloads
