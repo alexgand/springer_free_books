@@ -1,7 +1,10 @@
 ## Python script to download all Springer books released for free during the 2020 COVID-19 quarantine
 
+### Books available
+It used to have 409 english books (it took about 4 hours to complete the download ~ 14 GB, both PDF and EPUB, on my machine), but Springer has since removed some of them from the open access.
+
 ### Usage
-**Note**: If you want just one or two specific books, get the excel file [here](https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4) and manually download those or use the script to help you download (see **Download book selectively** sub-section). It took about 4 hours to complete the 409 english books (14 GB, both PDF and EPUB) on my machine.
+**Note**: If you want just one or two specific books, get the excel file [here](https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/v4) and manually download those or use the script to help you download (see **Download book selectively** sub-section).
 
 By default the script stores the books in `./downloads` subfolder according to the subject ("English Package Name" column of the excel file).
 
