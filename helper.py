@@ -1,20 +1,25 @@
 import os
 import re
-import requests
-import shutil
 import time
-import pandas as pd
+import errno
+import shutil
+import hashlib
+import requests
 import numpy as np
+import pandas as pd
 from tqdm import tqdm
+
 
 BOOK_TITLE = 'Book Title'
 CATEGORY   = 'English Package Name'
 MAX_FILENAME_LEN = 145
 
+
 def create_path(path):
     if not os.path.exists(path):
         os.makedirs(path)
     return path
+
 
 def create_book_file(base_path, bookname, patch):
     """
@@ -90,6 +95,7 @@ def download_book_if_exists(request, output_file, patch):
 
 
 def download_books(books, folder, patches):
+    max_length = get_max_filename_length(folder)
     books = books[
         [
           'OpenURL',
@@ -102,7 +108,10 @@ def download_books(books, folder, patches):
     ]
     for url, title, author, edition, isbn, category in tqdm(books.values):
         dest_folder = create_path(os.path.join(folder, category))
-        bookname = compose_bookname(title, author, edition, isbn)
+        length = max_length - len(category) - 2
+        if length > MAX_FILENAME_LEN:
+            length = MAX_FILENAME_LEN
+        bookname = compose_bookname(title, author, edition, isbn, length)
         request = None
         for patch in patches:
             try:
@@ -123,16 +132,50 @@ def download_books(books, folder, patches):
 replacements = {'/':'-', '\\':'-', ':':'-', '*':'', '>':'', '<':'', '?':'', \
                 '|':'', '"':''}
 
-def compose_bookname(title, author, edition, isbn):
+def compose_bookname(title, author, edition, isbn, max_length):
     bookname = title + ' - ' + author + ', ' + edition + ' - ' + isbn
-    if(len(bookname) > MAX_FILENAME_LEN):
+    if(len(bookname) > max_length):
         bookname = title + ' - ' + author.split(',')[0] + ' et al., ' + \
                     edition + ' - ' + isbn
-    if(len(bookname) > MAX_FILENAME_LEN):
+    if(len(bookname) > max_length):
         bookname = title + ' - ' + author.split(',')[0] + ' et al. - ' + isbn
-    if(len(bookname) > MAX_FILENAME_LEN):
+    if(len(bookname) > max_length):
         bookname = title + ' - ' + isbn
-    if(len(bookname) > MAX_FILENAME_LEN):
-        bookname = title[:(MAX_FILENAME_LEN - 20)] + ' - ' + isbn
+    if(len(bookname) > max_length):
+        bookname = title[:(max_length - 20)] + ' - ' + isbn
     bookname = bookname.encode('ascii', 'ignore').decode('ascii')
     return "".join([replacements.get(c, c) for c in bookname])
+
+
+def create_random_hex_string(length):
+    t = str(time.time()).encode('utf-8')
+    sha512 = hashlib.sha512(t)
+    name = ''
+    for i in range(0, int(length / 128 + 1)):
+        sha512.update(name.encode('utf-8') + t)
+        name = name + sha512.hexdigest()
+    return name[:length]
+
+
+def get_max_filename_length(path):
+    """
+    Use binary search to determine the maximum filename length
+    possible for the given path
+    """
+    hi = mid = 1024
+    lo = 0
+    while mid > lo:
+        name = create_random_hex_string(mid)
+        try:
+            test_file = os.path.join(path, name + '.temp')
+            with open(test_file, 'w') as out_file:
+                out_file.write('Hello, world!')
+            lo = mid
+            os.remove(test_file)
+        except (OSError, IOError) as e:
+            if e.errno == errno.EACCES:
+                name = create_random_hex_string(mid)
+                continue
+            hi = mid
+        mid = int((hi + lo) / 2)
+    return mid
