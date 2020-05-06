@@ -2,7 +2,7 @@ import os
 import re
 import time
 import errno
-import shutil
+import urllib
 import hashlib
 import requests
 import numpy as np
@@ -78,13 +78,7 @@ def indices_of_categories(categories, books):
 
 def download_book(url, book_path):
     if not os.path.exists(book_path):
-        with requests.get(url, stream=True) as req:
-            path = create_path('./tmp')
-            tmp_file = os.path.join(path, '_-_temp_file_-_.bak')
-            with open(tmp_file, 'wb') as out_file:
-                shutil.copyfileobj(req.raw, out_file)
-                out_file.close()
-            shutil.move(tmp_file, book_path)
+        urllib.request.urlretrieve(url,book_path)        
 
 
 def download_book_if_exists(request, output_file, patch):
