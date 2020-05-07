@@ -174,7 +174,6 @@ def get_max_filename_length(path):
             os.remove(test_file)
         except (OSError, IOError) as e:
             if e.errno == errno.EACCES:
-                name = create_random_hex_string(mid)
                 continue
             hi = mid
         mid = int((hi + lo) / 2)
