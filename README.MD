@@ -1,5 +1,5 @@
 ## Python script to download all Springer books released for free during the 2020 COVID-19 quarantine
-
+![Python package and testrun](https://github.com/alexgand/springer_free_books/workflows/Python%20package%20and%20testrun/badge.svg)
 ### Books available
 It used to have 409 english books (it took about 4 hours to complete the download ~ 14 GB, both PDF and EPUB, on my machine), but Springer has since removed some of them from the open access.
 
@@ -77,7 +77,7 @@ The following invalid book categories will be ignored:
 ### Running in a virtual environment (Bash commands):
 ```bash
 python3 -m venv .venv
-. .venv/bin/activate
+source .venv/bin/activate
 pip install -r requirements.txt
 python3 main.py
 ```
@@ -99,7 +99,7 @@ python main.py
 ```winbatch
 python -m virtualenv .venv
 .venv\Scripts\activate.bat
-pip install -r requirements2x.txt
+pip install -r requirements.txt
 python main.py
 ```
 
