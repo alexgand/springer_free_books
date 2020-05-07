@@ -12,7 +12,8 @@ from tqdm import tqdm
 
 BOOK_TITLE = 'Book Title'
 CATEGORY   = 'English Package Name'
-MAX_FILENAME_LEN = 145
+MIN_FILENAME_LEN = 50                   # DON'T CHANGE THIS VALUE!!!
+MAX_FILENAME_LEN = 145                  # Must be >50
 
 
 def create_path(path):
@@ -21,10 +22,9 @@ def create_path(path):
     return path
 
 
-def create_book_file(base_path, bookname, patch):
+def get_book_path_if_new(base_path, bookname, patch):
     """
-    Create a file to store book content and return the file reference
-    if it is newly created. Otherwise return None.
+    Return the book path if it doesn't exist. Otherwise return None.
     """
     output_file = os.path.join(base_path, bookname + patch['ext'])
     if os.path.exists(output_file):
@@ -95,7 +95,15 @@ def download_book_if_exists(request, output_file, patch):
 
 
 def download_books(books, folder, patches):
+    assert MAX_FILENAME_LEN >= MIN_FILENAME_LEN,                             \
+            'Please change MAX_FILENAME_LEN to a value greater than 50'
     max_length = get_max_filename_length(folder)
+    longest_name = books[CATEGORY].map(len).max()
+    if max_length - longest_name < MIN_FILENAME_LEN:
+        print('The download directory path is too lengthy:')
+        print('{}'.format(os.path.abspath(folder)))
+        print('Please choose a shorter one')
+        exit(-1)
     books = books[
         [
           'OpenURL',
@@ -115,7 +123,7 @@ def download_books(books, folder, patches):
         request = None
         for patch in patches:
             try:
-                output_file = create_book_file(dest_folder, bookname, patch)
+                output_file = get_book_path_if_new(dest_folder, bookname, patch)
                 if output_file is not None:
                     request = requests.get(url) if request is None else request
                     download_book_if_exists(request, output_file, patch)
@@ -142,6 +150,7 @@ def compose_bookname(title, author, edition, isbn, max_length):
     if(len(bookname) > max_length):
         bookname = title + ' - ' + isbn
     if(len(bookname) > max_length):
+        assert max_length >= 20, "max_length must not be less than 20"
         bookname = title[:(max_length - 20)] + ' - ' + isbn
     bookname = bookname.encode('ascii', 'ignore').decode('ascii')
     return "".join([replacements.get(c, c) for c in bookname])
@@ -174,7 +183,6 @@ def get_max_filename_length(path):
             os.remove(test_file)
         except (OSError, IOError) as e:
             if e.errno == errno.EACCES:
-                name = create_random_hex_string(mid)
                 continue
             hi = mid
         mid = int((hi + lo) / 2)
