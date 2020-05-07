@@ -12,7 +12,8 @@ from tqdm import tqdm
 
 BOOK_TITLE = 'Book Title'
 CATEGORY   = 'English Package Name'
-MAX_FILENAME_LEN = 145
+MIN_FILENAME_LEN = 50                   # DON'T CHANGE THIS VALUE!!!
+MAX_FILENAME_LEN = 145                  # Must be >50
 
 
 def create_path(path):
@@ -94,7 +95,15 @@ def download_book_if_exists(request, output_file, patch):
 
 
 def download_books(books, folder, patches):
+    assert MAX_FILENAME_LEN >= MIN_FILENAME_LEN,                             \
+            'Please change MAX_FILENAME_LEN to a value greater than 50'
     max_length = get_max_filename_length(folder)
+    longest_name = books[CATEGORY].map(len).max()
+    if max_length - longest_name < MIN_FILENAME_LEN:
+        print('The download directory path is too lengthy:')
+        print('{}'.format(os.path.abspath(folder)))
+        print('Please choose a shorter one')
+        exit(-1)
     books = books[
         [
           'OpenURL',
@@ -141,6 +150,7 @@ def compose_bookname(title, author, edition, isbn, max_length):
     if(len(bookname) > max_length):
         bookname = title + ' - ' + isbn
     if(len(bookname) > max_length):
+        assert max_length >= 20, "max_length must not be less than 20"
         bookname = title[:(max_length - 20)] + ' - ' + isbn
     bookname = bookname.encode('ascii', 'ignore').decode('ascii')
     return "".join([replacements.get(c, c) for c in bookname])
