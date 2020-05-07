@@ -21,10 +21,9 @@ def create_path(path):
     return path
 
 
-def create_book_file(base_path, bookname, patch):
+def get_book_path_if_new(base_path, bookname, patch):
     """
-    Create a file to store book content and return the file reference
-    if it is newly created. Otherwise return None.
+    Return the book path if it doesn't exist. Otherwise return None.
     """
     output_file = os.path.join(base_path, bookname + patch['ext'])
     if os.path.exists(output_file):
@@ -115,7 +114,7 @@ def download_books(books, folder, patches):
         request = None
         for patch in patches:
             try:
-                output_file = create_book_file(dest_folder, bookname, patch)
+                output_file = get_book_path_if_new(dest_folder, bookname, patch)
                 if output_file is not None:
                     request = requests.get(url) if request is None else request
                     download_book_if_exists(request, output_file, patch)
