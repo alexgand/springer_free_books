@@ -77,7 +77,7 @@ The following invalid book categories will be ignored:
 ### Running in a virtual environment (Bash commands):
 ```bash
 python3 -m venv .venv
-. .venv/bin/activate
+source .venv/bin/activate
 pip install -r requirements.txt
 python3 main.py
 ```
@@ -99,7 +99,7 @@ python main.py
 ```winbatch
 python -m virtualenv .venv
 .venv\Scripts\activate.bat
-pip install -r requirements2x.txt
+pip install -r requirements.txt
 python main.py
 ```
 
