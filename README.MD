@@ -1,5 +1,5 @@
 ## Python script to download all Springer books released for free during the 2020 COVID-19 quarantine
-![Python package and testrun](https://github.com/chaosAD/springer_free_books/workflows/Python%20package%20and%20testrun/badge.svg)
+![Python package and testrun](https://github.com/alexgand/springer_free_books/workflows/Python%20package%20and%20testrun/badge.svg)
 ### Books available
 It used to have 409 english books (it took about 4 hours to complete the download ~ 14 GB, both PDF and EPUB, on my machine), but Springer has since removed some of them from the open access.
 
