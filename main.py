@@ -67,7 +67,7 @@ if len(indices) == 0 and (len(invalid_categories) > 0 or args.book_index):
 
 indices = list(set(indices))                            # Remove duplicates
 books = filter_books(books, sorted(indices))
-books.index = [i + 2 for i in books.index]        # Recorrect indices
+books.index = [i + 2 for i in books.index]              # Recorrect indices
 print_summary(books, invalid_categories, args)
 download_books(books, folder, patches)
 
