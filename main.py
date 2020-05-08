@@ -34,7 +34,15 @@ table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/conten
 table = 'table_' + table_url.split('/')[-1] + '.xlsx'
 table_path = os.path.join(folder, table)
 if not os.path.exists(table_path):
-    books = pd.read_excel(table_url)
+    try:
+        books = pd.read_excel(table_url)
+    except (OSError, IOError) as e:
+        if e.__class__.__name__ == 'HTTPError' and e.getcode() == 404:
+            print('Error: {} URL page not found. '.format(table_url) +
+                  'Please contact intelligent human for help.')
+        else:
+            print(e)
+        exit(-1)
     # Save table in the download folder
     books.to_excel(table_path)
 else:
