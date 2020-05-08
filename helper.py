@@ -76,27 +76,25 @@ def indices_of_categories(categories, books):
     return books.index[t].tolist(), invalid_categories
 
 
-def download_book(url, book_path):
-    if not os.path.exists(book_path):
-        with requests.get(url, stream=True) as req:
-            path = create_path('./tmp')
-            tmp_file = os.path.join(path, '_-_temp_file_-_.bak')
-            with open(tmp_file, 'wb') as out_file:
-                shutil.copyfileobj(req.raw, out_file)
-                out_file.close()
-            shutil.move(tmp_file, book_path)
-
-
-def download_book_if_exists(request, output_file, patch):
+def download_book(request, output_file, patch):
     new_url = request.url.replace('%2F','/').replace('/book/', patch['url']) + patch['ext']
     request = requests.get(new_url, stream=True)
-    if request.status_code == 200:
-        download_book(new_url, output_file)
+    with requests.get(new_url, stream=True) as req:
+        if req.status_code == 200:
+            if not os.path.exists(output_file):
+                path = create_path('./tmp')
+                tmp_file = os.path.join(path, '_-_temp_file_-_.bak')
+                with open(tmp_file, 'wb') as out_file:
+                    shutil.copyfileobj(req.raw, out_file)
+                    out_file.close()
+                shutil.move(tmp_file, output_file)
 
 
 def download_books(books, folder, patches):
     assert MAX_FILENAME_LEN >= MIN_FILENAME_LEN,                             \
-            'Please change MAX_FILENAME_LEN to a value greater than 50'
+        'Please change MAX_FILENAME_LEN to a value greater than {}'.format(
+            MIN_FILENAME_LEN
+        )
     max_length = get_max_filename_length(folder)
     longest_name = books[CATEGORY].map(len).max()
     if max_length - longest_name < MIN_FILENAME_LEN:
@@ -126,7 +124,7 @@ def download_books(books, folder, patches):
                 output_file = get_book_path_if_new(dest_folder, bookname, patch)
                 if output_file is not None:
                     request = requests.get(url) if request is None else request
-                    download_book_if_exists(request, output_file, patch)
+                    download_book(request, output_file, patch)
             except (OSError, IOError) as e:
                 print(e)
                 title = title.encode('ascii', 'ignore').decode('ascii')
