@@ -1,5 +1,5 @@
-import os
 import re
+import os
 import time
 import errno
 import shutil
@@ -8,6 +8,7 @@ import requests
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+from bs4 import BeautifulSoup
 
 
 BOOK_TITLE = 'Book Title'
@@ -27,6 +28,15 @@ def get_book_path_if_new(base_path, bookname, patch):
     Return the book path if it doesn't exist. Otherwise return None.
     """
     output_file = os.path.join(base_path, bookname + patch['ext'])
+    if os.path.exists(output_file):
+        return None
+    return output_file
+
+def get_chapter_path_if_new(base_path, chapter_name, patch):
+    """
+    Return the chapter path if it doesn't exist. Otherwise return None.
+    """
+    output_file = os.path.join(base_path, chapter_name + patch['ext'])
     if os.path.exists(output_file):
         return None
     return output_file
@@ -93,6 +103,19 @@ def download_book_if_exists(request, output_file, patch):
     if request.status_code == 200:
         download_book(new_url, output_file)
 
+def scrape_chapters(req):
+    soup = BeautifulSoup(req.content, 'html.parser')
+    toc = soup.select('.content-type-list__action-label.test-book-toc-download-link')
+    chapters = [iso['aria-label'] for iso in toc]
+    all_chapters = []
+    for n, item in enumerate(chapters):
+        all_chapters.append(chapters[n][15:])
+    links = [iso['href'] for iso in toc]
+    base = 'https://link.springer.com'
+    for n, link in enumerate(links):
+        links[n] = base + link
+    return all_chapters,links
+
 
 def download_books(books, folder, patches):
     assert MAX_FILENAME_LEN >= MIN_FILENAME_LEN,                             \
@@ -123,10 +146,24 @@ def download_books(books, folder, patches):
         request = None
         for patch in patches:
             try:
-                output_file = get_book_path_if_new(dest_folder, bookname, patch)
-                if output_file is not None:
+                if not patch['dl_chapters']:
+                    output_file = get_book_path_if_new(dest_folder, bookname, patch)
+                    if output_file is not None:
+                        request = requests.get(url) if request is None else request
+                        download_book_if_exists(request, output_file, patch)
+                    else:
+                        print("output_file was None")
+                else:
+                    # download in chapters
+                    dest_folder = create_path(os.path.join(dest_folder, title))
                     request = requests.get(url) if request is None else request
-                    download_book_if_exists(request, output_file, patch)
+                    all_chapters,links = scrape_chapters(request)
+                    for (chapter,link) in zip(all_chapters,links):
+                        output_file = get_book_path_if_new(dest_folder, chapter, patch)
+                        if output_file is not None:
+                            download_book(link, output_file)
+                        else:
+                            print("output_file was None")
             except (OSError, IOError) as e:
                 print(e)
                 title = title.encode('ascii', 'ignore').decode('ascii')
