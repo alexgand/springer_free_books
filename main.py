@@ -39,7 +39,7 @@ if not os.path.exists(table_path):
     except (OSError, IOError) as e:
         if e.__class__.__name__ == 'HTTPError' and e.getcode() == 404:
             print('Error: {} URL page not found. '.format(table_url) +
-                  'Please contact intelligent human for help.')
+                  'Fix the URL in the Python script, or get someone to help.')
         else:
             print(e)
         exit(-1)
