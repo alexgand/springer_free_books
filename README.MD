@@ -8,7 +8,7 @@ It used to have 409 english books (it took about 4 hours to complete the downloa
 
 By default the script stores the books in `./downloads` subfolder according to the subject ("English Package Name" column of the excel file).
 
-#### Download all books (PDF and EPUB)
+#### Download all English books (PDF and EPUB)
 Use the following command to download all PDF and EPUB books to the default download folder `./downloads`
 ```bash
 python3 main.py
@@ -21,6 +21,14 @@ You can download to an absolute path, say `C:/ebooks/springer/`
 ```bash
 python3 main.py -f C:/ebooks/springer/
 ```
+
+### Download all German books (PDF and EPUB)
+To download the German books use
+```bash
+python3 main.py --lang de
+```
+This language flag can be combined with any of the above and below mentioned options. If not specified, `--lang en`, i.e. English, is
+the default.
 
 #### Download all books of specific format
 To download all PDF books only, run
