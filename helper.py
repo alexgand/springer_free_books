@@ -84,8 +84,14 @@ def download_book(request, output_file, patch):
             if not os.path.exists(output_file):
                 path = create_path('./tmp')
                 tmp_file = os.path.join(path, '_-_temp_file_-_.bak')
+                file_size = int(req.headers['Content-Length'])
+                chunk_size = 1024
+                num_bars = file_size // chunk_size
                 with open(tmp_file, 'wb') as out_file:
-                    shutil.copyfileobj(req.raw, out_file)
+                    for chunk in tqdm(req.iter_content(chunk_size=chunk_size),
+                            total=num_bars, unit='KB', desc=os.path.basename(output_file),
+                            leave=True):
+                        out_file.write(chunk)
                     out_file.close()
                 shutil.move(tmp_file, output_file)
 
@@ -112,7 +118,7 @@ def download_books(books, folder, patches):
           'English Package Name'
         ]
     ]
-    for url, title, author, edition, isbn, category in tqdm(books.values):
+    for url, title, author, edition, isbn, category in tqdm(books.values, desc='Overall Progress'):
         dest_folder = create_path(os.path.join(folder, category))
         length = max_length - len(category) - 2
         if length > MAX_FILENAME_LEN:
