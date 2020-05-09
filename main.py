@@ -27,12 +27,17 @@ parser.add_argument(
     help='list of book indices to download'
 )
 parser.add_argument(
+    '-j', '--jobs', dest='jobs', type=int, default=1,
+    help='number of parallel download jobs'
+)
+parser.add_argument(
     '-v','--verbose', action='store_true', help='show more details'
 )
 
 args = parser.parse_args()
 folder = create_path(args.folder if args.folder else './downloads')
 
+assert args.jobs > 0, '-j or --jobs must be > 0'
 assert args.language in ('en', 'de'), '-l or --language must be "en" or "de"'
 if args.language == 'en':
     table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/'
@@ -85,6 +90,6 @@ indices = list(set(indices))                            # Remove duplicates
 books = filter_books(books, sorted(indices))
 books.index = [i + 2 for i in books.index]              # Recorrect indices
 print_summary(books, invalid_categories, args)
-download_books(books, folder, patches)
+download_books(books, folder, patches, args.jobs)
 
 print('\nFinish downloading.')

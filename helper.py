@@ -8,6 +8,12 @@ import requests
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+try:
+    import queue
+except:
+    import Queue as queue
+import threading
+import tempfile
 
 
 BOOK_TITLE = 'Book Title'
@@ -76,27 +82,68 @@ def indices_of_categories(categories, books):
     return books.index[t].tolist(), invalid_categories
 
 
-def download_book(request, output_file, patch):
+def download_book(request, output_file, patch, jobnum):
     new_url = request.url.replace('%2F','/').replace('/book/', patch['url']) + patch['ext']
     request = requests.get(new_url, stream=True)
+    t = threading.current_thread()
     with requests.get(new_url, stream=True) as req:
-        if req.status_code == 200:
-            if not os.path.exists(output_file):
-                path = create_path('./tmp')
-                tmp_file = os.path.join(path, '_-_temp_file_-_.bak')
-                file_size = int(req.headers['Content-Length'])
-                chunk_size = 1024
-                num_bars = file_size // chunk_size
-                with open(tmp_file, 'wb') as out_file:
-                    for chunk in tqdm(req.iter_content(chunk_size=chunk_size),
-                            total=num_bars, unit='KB', desc=os.path.basename(output_file),
-                            leave=True):
-                        out_file.write(chunk)
-                    out_file.close()
-                shutil.move(tmp_file, output_file)
+        if req.status_code == 200 and not os.path.exists(output_file):
+            path = create_path('./tmp')
+            file_size = int(req.headers['Content-Length'])
+            chunk_size = 1024
+            num_bars = file_size // chunk_size
+            tmp_file = None
+            with tempfile.NamedTemporaryFile(dir=path, mode='wb', delete=False) as out_file:
+                tmp_file = out_file.name
+                for chunk in tqdm(req.iter_content(chunk_size=chunk_size),
+                        total=num_bars, unit='KB', desc='Job {}: {}'.format(jobnum, os.path.basename(output_file)),
+                        leave=False, position=jobnum):
+                    if t.cancelled:
+                        out_file.close()
+                        os.unlink(tmp_file)
+                        return
+                    out_file.write(chunk)
+                out_file.close()
+            shutil.move(tmp_file, output_file)
 
 
-def download_books(books, folder, patches):
+def make_worker(items_queue, progress, jobnum):
+    'Helper to make a paremeterized worker-thread-function'
+    def worker():
+        'The worker function that fetches items to download from the queue'
+        t = threading.current_thread()
+        t.cancelled = False
+        request = None
+        while True:
+            try:
+                if t.cancelled:
+                    break
+                item = items_queue.get(True, 0.1)
+                dest_folder = item['folder']
+                bookname = item['name']
+                title = item['title']
+                patch = item['patch']
+                url = item['url']
+                output_file = get_book_path_if_new(dest_folder, bookname, patch)
+                if output_file is not None:
+                    request = requests.get(url) if request is None else request
+                    download_book(request, output_file, patch, jobnum)
+            except (OSError, IOError) as e:
+                tqdm.write(e)
+                title = title.encode('ascii', 'ignore').decode('ascii')
+                tqdm.write('* Problem downloading: {}, so skipping it.'
+                        .format(title))
+                request = None                    # Enforce new get request
+                # then continue to download the next book
+            except queue.Empty:
+                return
+            items_queue.task_done()
+            if not t.cancelled:
+                progress.update(1)
+    return worker
+
+
+def download_books(books, folder, patches, jobs):
     assert MAX_FILENAME_LEN >= MIN_FILENAME_LEN,                             \
         'Please change MAX_FILENAME_LEN to a value greater than {}'.format(
             MIN_FILENAME_LEN
@@ -118,28 +165,37 @@ def download_books(books, folder, patches):
           'English Package Name'
         ]
     ]
-    for url, title, author, edition, isbn, category in tqdm(books.values, desc='Overall Progress'):
+    pbar = tqdm(total=len(books.values)*len(patches), desc='Overall Progress', leave=True, position=0)
+    q = queue.Queue()
+    threads = []
+    for i in range(jobs):
+        t = threading.Thread(target=make_worker(q, pbar, i+1))
+        t.daemon = True
+        t.start()
+        threads.append(t)
+    for url, title, author, edition, isbn, category in books.values:
         dest_folder = create_path(os.path.join(folder, category))
         length = max_length - len(category) - 2
         if length > MAX_FILENAME_LEN:
             length = MAX_FILENAME_LEN
         bookname = compose_bookname(title, author, edition, isbn, length)
-        request = None
         for patch in patches:
-            try:
-                output_file = get_book_path_if_new(dest_folder, bookname, patch)
-                if output_file is not None:
-                    request = requests.get(url) if request is None else request
-                    download_book(request, output_file, patch)
-            except (OSError, IOError) as e:
-                print(e)
-                title = title.encode('ascii', 'ignore').decode('ascii')
-                print('* Problem downloading: {}, so skipping it.'
-                        .format(title))
-                time.sleep(30)
-                request = None                    # Enforce new get request
-                # then continue to download the next book
-
+            q.put(dict(folder=dest_folder, name=bookname, patch=patch, title=title, url=url))
+    try:
+        while True:
+            if not q.empty():
+                time.sleep(0.1)
+            else:
+                break
+    except KeyboardInterrupt:
+        for t in threads:
+            t.cancelled = True
+        for t in threads:
+            t.join()
+        raise
+    finally:
+        pbar.close()
+    q.join()
 
 replacements = {'/':'-', '\\':'-', ':':'-', '*':'', '>':'', '<':'', '?':'', \
                 '|':'', '"':''}

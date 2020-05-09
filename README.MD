@@ -21,6 +21,10 @@ You can download to an absolute path, say `C:/ebooks/springer/`
 ```bash
 python3 main.py -f C:/ebooks/springer/
 ```
+Parallel downloading, say with 3 jobs, can be enabled with
+```bash
+python3 main.py -j 3
+```
 
 ### Download all German books (PDF and EPUB)
 To download the German books use
