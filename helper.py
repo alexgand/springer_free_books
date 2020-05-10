@@ -44,10 +44,10 @@ def print_invalid_categories(invalid_categories):
         # Remove duplicates
         invalid_categories = series[~series.duplicated()]
         s = 'categories' if len(invalid_categories) > 1 else 'category'
-        print("The following invalid book {} will be ignored:".format(s))
+        tqdm.write("The following invalid book {} will be ignored:".format(s))
         for i, name in enumerate(invalid_categories):
-            print(" {}. {}".format((i + 1), name))
-        print('')
+            tqdm.write(" {}. {}".format((i + 1), name))
+        tqdm.write('')
 
 
 def print_summary(books, invalid_categories, args):
@@ -55,8 +55,8 @@ def print_summary(books, invalid_categories, args):
     pd.set_option('display.max_rows', None)
     if args.verbose:
         # Print all titles to be downloaded
-        print(books.loc[:, (BOOK_TITLE, CATEGORY)])
-    print("\n{} titles ready to be downloaded...".format(len(books.index)))
+        tqdm.write(str(books.loc[:, (BOOK_TITLE, CATEGORY)]))
+    tqdm.write("\n{} titles ready to be downloaded...".format(len(books.index)))
     print_invalid_categories(invalid_categories)
 
 
@@ -151,9 +151,9 @@ def download_books(books, folder, patches, jobs):
     max_length = get_max_filename_length(folder)
     longest_name = books[CATEGORY].map(len).max()
     if max_length - longest_name < MIN_FILENAME_LEN:
-        print('The download directory path is too lengthy:')
-        print('{}'.format(os.path.abspath(folder)))
-        print('Please choose a shorter one')
+        tqdm.write('The download directory path is too lengthy:')
+        tqdm.write('{}'.format(os.path.abspath(folder)))
+        tqdm.write('Please choose a shorter one')
         exit(-1)
     books = books[
         [
