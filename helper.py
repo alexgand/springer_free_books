@@ -32,15 +32,6 @@ def get_book_path_if_new(base_path, bookname, patch):
         return None
     return output_file
 
-def get_chapter_path_if_new(base_path, chapter_name, patch):
-    """
-    Return the chapter path if it doesn't exist. Otherwise return None.
-    """
-    output_file = os.path.join(base_path, chapter_name + patch['ext'])
-    if os.path.exists(output_file):
-        return None
-    return output_file
-
 
 def print_invalid_categories(invalid_categories):
     if len(invalid_categories) > 0:
@@ -103,10 +94,6 @@ def download_item(url,output_file):
                     out_file.close()
                 shutil.move(tmp_file, output_file)
 
-def format_url(request, patch):
-    new_url = request.url.replace('%2F', '/').replace('/book/', patch['url']) + patch['ext']
-    return new_url
-
 
 def scrape_chapters(req):
     soup = BeautifulSoup(req.content, 'html.parser')
@@ -157,7 +144,7 @@ def download_books(books, folder, patches):
                     output_file = get_book_path_if_new(dest_folder, bookname, patch)
                     if output_file is not None:
                         request = requests.get(url) if request is None else request
-                        new_url = format_url(request,patch)
+                        new_url = request.url.replace('%2F', '/').replace('/book/', patch['url']) + patch['ext']
                         request = requests.get(new_url, stream=True)
                         download_item(new_url, output_file)
                     else:
