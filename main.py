@@ -45,10 +45,13 @@ indices = []
 invalid_categories = []
 if not args.pdf and not args.epub:
     args.pdf = args.epub = True
+if args.dl_chapters:
+    dl_chapters = args.pdf = True
+    args.epub = False
 if args.pdf:
-    patches.append({'url':'/content/pdf/', 'ext':'.pdf'})
+    patches.append({'url':'/content/pdf/', 'ext':'.pdf','dl_chapters':dl_chapters})
 if args.epub:
-    patches.append({'url':'/download/epub/', 'ext':'.epub'})
+    patches.append({'url':'/download/epub/', 'ext':'.epub','dl_chapters':dl_chapters})
 if args.book_index != None:
     indices = [
         i - 2 for i in map(int, args.book_index)
