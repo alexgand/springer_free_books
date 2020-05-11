@@ -103,7 +103,7 @@ def download_item(url,output_file):
                     out_file.close()
                 shutil.move(tmp_file, output_file)
 
-def format_url(request):
+def format_url(request, patch):
     new_url = request.url.replace('%2F', '/').replace('/book/', patch['url']) + patch['ext']
     return new_url
 
@@ -157,7 +157,7 @@ def download_books(books, folder, patches):
                     output_file = get_book_path_if_new(dest_folder, bookname, patch)
                     if output_file is not None:
                         request = requests.get(url) if request is None else request
-                        new_url = format_url(request)
+                        new_url = format_url(request,patch)
                         request = requests.get(new_url, stream=True)
                         download_item(new_url, output_file)
                     else:
