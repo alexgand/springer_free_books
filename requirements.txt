@@ -16,5 +16,5 @@ soupsieve==2.0
 tqdm==4.45.0
 urllib3==1.25.8
 xlrd==1.2.0
-urllib3>=1.25.8
 goty
+

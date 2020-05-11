@@ -64,7 +64,8 @@ invalid_categories = []
 if not args.pdf and not args.epub:
     args.pdf = args.epub = True
 if args.dl_chapters:
-    dl_chapters = True
+    dl_chapters = args.pdf = True
+    args.epub = False
 else:
     dl_chapters = False
 if args.pdf:

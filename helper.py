@@ -119,6 +119,20 @@ def scrape_chapters(req):
     return all_chapters,links
 
 
+def scrape_chapters(req):
+    soup = BeautifulSoup(req.content, 'html.parser')
+    toc = soup.select('.content-type-list__action-label.test-book-toc-download-link')
+    chapters = [iso['aria-label'] for iso in toc]
+    all_chapters = []
+    for n, item in enumerate(chapters):
+        all_chapters.append(chapters[n][15:])
+    links = [iso['href'] for iso in toc]
+    base = 'https://link.springer.com'
+    for n, link in enumerate(links):
+        links[n] = base + link
+    return all_chapters,links
+
+
 def download_books(books, folder, patches):
     assert MAX_FILENAME_LEN >= MIN_FILENAME_LEN,                             \
         'Please change MAX_FILENAME_LEN to a value greater than {}'.format(
@@ -161,7 +175,6 @@ def download_books(books, folder, patches):
                     # download in chapters
                     dest_folder = create_path(os.path.join(dest_folder, title))
                     request = requests.get(url) if request is None else request
-<<<<<<< HEAD
                     all_chapters,links = scrape_chapters(request)
                     for (chapter,link) in zip(all_chapters,links):
                         output_file = get_book_path_if_new(dest_folder, chapter, patch)
@@ -169,9 +182,7 @@ def download_books(books, folder, patches):
                             download_book(link, output_file)
                         else:
                             print("output_file was None")
-=======
-                    download_book(request, output_file, patch)
->>>>>>> upstream/master
+                        download_book(request, output_file, patch)
             except (OSError, IOError) as e:
                 print(e)
                 title = title.encode('ascii', 'ignore').decode('ascii')
