@@ -170,7 +170,6 @@ def download_books(books, folder, patches):
                     for (chapter,link) in zip(all_chapters,links):
                         output_file = get_book_path_if_new(dest_folder, chapter, patch)
                         if output_file is not None:
-                            print("THIS IS WHAT THE output_file is: {}".format(output_file))
                             download_item(link, output_file)
                         else:
                             print("output_file was None")
