@@ -7,6 +7,9 @@ from helper import *
 
 
 parser = argparse.ArgumentParser()
+parser.add_argument('-l', '--lang', dest='language',
+    default='en', choices={'en', 'de'}, help='books language to download'
+)
 parser.add_argument('-f', '--folder', help='folder to store downloads')
 parser.add_argument(
     '--pdf', action='store_true', help='download PDF books'
@@ -32,11 +35,24 @@ parser.add_argument(
 args = parser.parse_args()
 folder = create_path(args.folder if args.folder else './downloads')
 
-table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/'
-table = 'table_' + table_url.split('/')[-1] + '.xlsx'
+assert args.language in ('en', 'de'), '-l or --language must be "en" or "de"'
+if args.language == 'en':
+    table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/'
+elif args.language == 'de':
+    table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/content/17863240/data/'
+ 
+table = 'table_' + table_url.split('/')[-1] + '_' + args.language + '.xlsx'
 table_path = os.path.join(folder, table)
 if not os.path.exists(table_path):
-    books = pd.read_excel(table_url)
+    try:
+        books = pd.read_excel(table_url)
+    except (OSError, IOError) as e:
+        if e.__class__.__name__ == 'HTTPError' and e.getcode() == 404:
+            print('Error: {} URL page not found. '.format(table_url) +
+                  'Fix the URL in the Python script, or get someone to help.')
+        else:
+            print(e)
+        exit(-1)
     # Save table in the download folder
     books.to_excel(table_path)
 else:
