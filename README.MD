@@ -22,13 +22,20 @@ You can download to an absolute path, say `C:/ebooks/springer/`
 python3 main.py -f C:/ebooks/springer/
 ```
 
-### Download all German books (PDF and EPUB)
+#### Download all German books (PDF and EPUB)
 To download the German books use
 ```bash
 python3 main.py --lang de
 ```
 This language flag can be combined with any of the above and below mentioned options. If not specified, `--lang en`, i.e. English, is
 the default.
+
+#### Download all books in chapters (PDF only)
+Use this command to download books in separate chapters 
+```bash
+python3 main.py --dl_chapters
+```
+This will create a new folder for each book at the path specified by `-f`
 
 #### Download all books of specific format
 To download all PDF books only, run
