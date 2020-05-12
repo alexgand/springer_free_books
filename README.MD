@@ -22,7 +22,12 @@ You can download to an absolute path, say `C:/ebooks/springer/`
 python3 main.py -f C:/ebooks/springer/
 ```
 
-### Download all German books (PDF and EPUB)
+To download books in separate chapters (PDF only) 
+```bash
+python3 main.py --dl_chapters
+```
+
+#### Download all German books (PDF and EPUB)
 To download the German books use
 ```bash
 python3 main.py --lang de

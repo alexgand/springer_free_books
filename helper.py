@@ -95,13 +95,21 @@ def download_item(url,output_file):
                 shutil.move(tmp_file, output_file)
 
 
+def compose_chapternames(chapters):
+    all_chapters = []
+    for n, item in enumerate(chapters):
+        if n < 10:
+            all_chapters.append('0' + str(n) + '-' + chapters[n][15:])
+        else:
+            all_chapters.append(str(n) + '-' + chapters[n][15:])
+    return all_chapters
+
+
 def scrape_chapters(req):
     soup = BeautifulSoup(req.content, 'html.parser')
     toc = soup.select('.content-type-list__action-label.test-book-toc-download-link')
     chapters = [iso['aria-label'] for iso in toc]
-    all_chapters = []
-    for n, item in enumerate(chapters):
-        all_chapters.append(chapters[n][15:])
+    all_chapters = compose_chapternames(chapters)
     links = [iso['href'] for iso in toc]
     base = 'https://link.springer.com'
     for n, link in enumerate(links):
@@ -151,10 +159,11 @@ def download_books(books, folder, patches):
                         print("output_file was None")
                 else:
                     # download in chapters
+                    # TODO: look into failed downloads like Chapter 9 of book 8 in the Excel sheet
                     dest_folder = create_path(os.path.join(dest_folder, title))
                     request = requests.get(url) if request is None else request
                     all_chapters,links = scrape_chapters(request)
-                    for (chapter,link) in zip(all_chapters,links):
+                    for chapter,link in zip(all_chapters,links):
                         output_file = get_book_path_if_new(dest_folder, chapter, patch)
                         if output_file is not None:
                             download_item(link, output_file)
