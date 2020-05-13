@@ -56,7 +56,7 @@ if not os.path.exists(table_path):
     # Remove empty entries
     books['Book Title'].replace('', np.nan, inplace=True)
     books.dropna(subset=['Book Title'], inplace=True)
-    books.index = range(2, len(books.index) + 2)
+    books.index = range(0, len(books.index))
     # Save table in the download folder
     books.to_excel(table_path)
 else:
@@ -78,7 +78,7 @@ if args.epub:
     patches.append({'url':'/download/epub/', 'ext':'.epub','dl_chapters':dl_chapters})
 if args.book_index != None:
     indices = [
-        i for i in map(int, args.book_index)
+        i - 2 for i in map(int, args.book_index)
         if 2 <= i < len(books.index) + 2
     ]
 if args.category != None:
@@ -94,6 +94,7 @@ if len(indices) == 0 and (len(invalid_categories) > 0 or args.book_index):
 
 indices = list(set(indices))                            # Remove duplicates
 books = filter_books(books, sorted(indices))
+books.index = [i + 2 for i in books.index]              # Recorrect indices
 print_summary(books, invalid_categories, args)
 download_books(books, folder, patches)
 
