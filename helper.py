@@ -83,7 +83,7 @@ def download_item(url,output_file):
             if not os.path.exists(output_file):
                 path = create_path('./tmp')
                 tmp_file = os.path.join(path, '_-_temp_file_-_.bak')
-                file_size = int(req.headers['Content-Length'])
+                file_size = int(req.headers['Content-Length']) if req.headers.get('Content-Length') else 30000
                 chunk_size = 1024
                 num_bars = file_size // chunk_size
                 with open(tmp_file, 'wb') as out_file:
