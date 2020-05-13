@@ -65,8 +65,7 @@ def filter_books(books, indices):
 
 def indices_of_categories(categories, books):
     invalid_categories = []
-    index = range(2, len(books.index) + 2)
-    t = pd.Series(np.zeros(len(books.index), dtype=bool), index=index)
+    t = pd.Series(np.zeros(len(books.index), dtype=bool))
     for c in categories:
         tick_list = books[CATEGORY].str.contains(
             '^' + c + '$', flags=re.IGNORECASE, regex=True
