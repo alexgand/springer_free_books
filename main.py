@@ -40,7 +40,7 @@ if args.language == 'en':
     table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/content/17858272/data/'
 elif args.language == 'de':
     table_url = 'https://resource-cms.springernature.com/springer-cms/rest/v1/content/17863240/data/'
- 
+
 table = 'table_' + table_url.split('/')[-1] + '_' + args.language + '.xlsx'
 table_path = os.path.join(folder, table)
 if not os.path.exists(table_path):
@@ -53,6 +53,10 @@ if not os.path.exists(table_path):
         else:
             print(e)
         exit(-1)
+    # Remove empty entries
+    books['Book Title'].replace('', np.nan, inplace=True)
+    books.dropna(subset=['Book Title'], inplace=True)
+    books.index = range(2, len(books.index) + 2)
     # Save table in the download folder
     books.to_excel(table_path)
 else:
@@ -74,7 +78,7 @@ if args.epub:
     patches.append({'url':'/download/epub/', 'ext':'.epub','dl_chapters':dl_chapters})
 if args.book_index != None:
     indices = [
-        i - 2 for i in map(int, args.book_index)
+        i for i in map(int, args.book_index)
         if 2 <= i < len(books.index) + 2
     ]
 if args.category != None:
@@ -90,7 +94,6 @@ if len(indices) == 0 and (len(invalid_categories) > 0 or args.book_index):
 
 indices = list(set(indices))                            # Remove duplicates
 books = filter_books(books, sorted(indices))
-books.index = [i + 2 for i in books.index]              # Recorrect indices
 print_summary(books, invalid_categories, args)
 download_books(books, folder, patches)
 
