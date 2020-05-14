@@ -15,6 +15,7 @@ BOOK_TITLE = 'Book Title'
 CATEGORY   = 'English Package Name'
 MIN_FILENAME_LEN = 50                   # DON'T CHANGE THIS VALUE!!!
 MAX_FILENAME_LEN = 145                  # Must be >50
+CHUNK_SIZE = 1024
 
 
 def create_path(path):
@@ -77,18 +78,18 @@ def indices_of_categories(categories, books):
     return books.index[t].tolist(), invalid_categories
 
 
-def get_iter_content(req, chunk_size, file_size, output_file):
-    num_bars = file_size // chunk_size
+def get_iter_content(req, file_size, output_file, title_and_type):
+    num_bars = file_size // CHUNK_SIZE
     if file_size > 0:
-        return tqdm(req.iter_content(chunk_size),
-            total=num_bars, unit='KB', desc=os.path.basename(output_file),
-            leave=True
+        tqdm.write(title_and_type, end='\n')
+        return tqdm(req.iter_content(CHUNK_SIZE),
+            total=num_bars, unit='KB', ascii=True, position=0, leave=True
         )
     else:
-        return req.iter_content(chunk_size)
+        return req.iter_content(CHUNK_SIZE)
 
 
-def download_item(url, output_file):
+def download_item(url, output_file, title_and_type):
     with requests.get(url, stream=True) as req:
         if req.status_code == 200:
             c_type = req.headers.get('Content-Type')
@@ -102,7 +103,7 @@ def download_item(url, output_file):
                 chunk_size = 1024
                 with open(tmp_file, 'wb') as out_file:
                     for chunk in get_iter_content(
-                        req, chunk_size, file_size, output_file):
+                        req, file_size, output_file, title_and_type):
                         out_file.write(chunk)
                     out_file.close()
                 shutil.move(tmp_file, output_file)
@@ -160,13 +161,14 @@ def download_books(books, folder, patches):
         bookname = compose_bookname(title, author, edition, isbn, length)
         request = None
         for patch in patches:
+            title_and_type = '{} [{}] ({})'.format(title, category, patch['ext'][1:])
             try:
                 if not patch['dl_chapters']:
                     output_file = get_book_path_if_new(dest_folder, bookname, patch)
                     if output_file is not None:
                         request = requests.get(url) if request is None else request
                         new_url = request.url.replace('%2F', '/').replace('/book/', patch['url']) + patch['ext']
-                        download_item(new_url, output_file)
+                        download_item(new_url, output_file, title_and_type)
                 else:
                     # download in chapters
                     # TODO: look into failed downloads like Chapter 9 of book 8 in the Excel sheet
@@ -176,7 +178,9 @@ def download_books(books, folder, patches):
                     for chapter,link in zip(all_chapters,links):
                         output_file = get_book_path_if_new(dest_folder, chapter, patch)
                         if output_file is not None:
-                            download_item(link, output_file)
+                            download_item(
+                                link, output_file, chapter + ', ' + title_and_type
+                            )
             except (OSError, IOError) as e:
                 tqdm.write('\n{}'.format(e))
                 title = title.encode('ascii', 'ignore').decode('ascii')
