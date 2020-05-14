@@ -166,7 +166,6 @@ def download_books(books, folder, patches):
                     if output_file is not None:
                         request = requests.get(url) if request is None else request
                         new_url = request.url.replace('%2F', '/').replace('/book/', patch['url']) + patch['ext']
-                        request = requests.get(new_url, stream=True)
                         download_item(new_url, output_file)
                 else:
                     # download in chapters
