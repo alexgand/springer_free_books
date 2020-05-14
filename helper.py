@@ -159,18 +159,13 @@ def download_books(books, folder, patches):
             length = MAX_FILENAME_LEN
         bookname = compose_bookname(title, author, edition, isbn, length)
         request = None
-        init_request_url = None
         for patch in patches:
             try:
                 if not patch['dl_chapters']:
                     output_file = get_book_path_if_new(dest_folder, bookname, patch)
                     if output_file is not None:
-                         # save init request url so we can reuse to construct both pdf and epub download paths
-                        if init_request_url is None:
-                            init_request = requests.get(url) 
-                            init_request_url = init_request.url
-                        new_url = init_request_url.replace('%2F', '/').replace('/book/', patch['url']) + patch['ext']
-                        requests.get(new_url, stream=True)
+                        request = requests.get(url) if request is None else request
+                        new_url = request.url.replace('%2F', '/').replace('/book/', patch['url']) + patch['ext']
                         download_item(new_url, output_file)
                 else:
                     # download in chapters
