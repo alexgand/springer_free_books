@@ -18,6 +18,17 @@ MAX_FILENAME_LEN = 145                  # Must be >50
 CHUNK_SIZE = 1024
 
 
+def string_length(x):
+    try:
+        return len(x)
+    except:
+        return 0
+
+
+def convert_to_ascii(string):
+    return string.encode('ascii', 'ignore').decode('ascii')
+
+
 def create_path(path):
     if not os.path.exists(path):
         os.makedirs(path)
@@ -100,7 +111,6 @@ def download_item(url, output_file, title_and_type):
                 tmp_file = os.path.join(path, output_file.split(os.path.sep)[-1])
                 file_size = req.headers.get('Content-Length')
                 file_size = int(file_size) if file_size is not None else 0
-                chunk_size = 1024
                 with open(tmp_file, 'wb') as out_file:
                     for chunk in get_iter_content(
                         req, file_size, output_file, title_and_type):
@@ -137,7 +147,7 @@ def download_books(books, folder, patches):
             MIN_FILENAME_LEN
         )
     max_length = get_max_filename_length(folder)
-    longest_name = books[CATEGORY].map(len).max()
+    longest_name = books[CATEGORY].map(string_length).max()
     if max_length - longest_name < MIN_FILENAME_LEN:
         print('The download directory path is too lengthy:')
         print('{}'.format(os.path.abspath(folder)))
@@ -159,6 +169,8 @@ def download_books(books, folder, patches):
         if length > MAX_FILENAME_LEN:
             length = MAX_FILENAME_LEN
         bookname = compose_bookname(title, author, edition, isbn, length)
+        title = convert_to_ascii(title)
+        category = convert_to_ascii(category)
         request = None
         for patch in patches:
             title_and_type = '{} [{}] ({})'.format(title, category, patch['ext'][1:])
@@ -183,7 +195,6 @@ def download_books(books, folder, patches):
                             )
             except (OSError, IOError) as e:
                 tqdm.write('\n{}'.format(e))
-                title = title.encode('ascii', 'ignore').decode('ascii')
                 tqdm.write('* Problem downloading: {} ({}), so skipping it.'
                             .format(title, patch['ext']))
                 time.sleep(15)
@@ -206,7 +217,7 @@ def compose_bookname(title, author, edition, isbn, max_length):
     if(len(bookname) > max_length):
         assert max_length >= 20, "max_length must not be less than 20"
         bookname = title[:(max_length - 20)] + ' - ' + isbn
-    bookname = bookname.encode('ascii', 'ignore').decode('ascii')
+    bookname = convert_to_ascii(bookname)
     return "".join([replacements.get(c, c) for c in bookname])
 
 
