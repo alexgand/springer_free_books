@@ -1,3 +1,7 @@
+Springer has just halted automatic download from their site. 
+This package will not perform as expected.
+
+
 ## Python script to download all Springer books released for free during the 2020 COVID-19 quarantine
 ![Python package and testrun](https://github.com/alexgand/springer_free_books/workflows/Python%20package%20and%20testrun/badge.svg)
 ### Books available
