@@ -1,4 +1,4 @@
-## Springer has just added reCAPTCHA step to prevent automatic download from their site. Thus, this package will not perform as expected, you may receive flawed files. 
+## Springer has just added the reCAPTCHA step to prevent automatic download from their site. Thus, this package will not perform as expected, you may receive flawed files. 
 
 
 
