@@ -1,5 +1,5 @@
-Springer has just halted automatic download from their site. 
-This package will not perform as expected.
+## Springer has just halted automatic download from their site. 
+## This package will not perform as expected. 
 
 
 ## Python script to download all Springer books released for free during the 2020 COVID-19 quarantine
