@@ -101,7 +101,7 @@ def get_iter_content(req, file_size, output_file, title_and_type):
 
 
 def download_item(url, output_file, title_and_type):
-    with requests.get(url, stream=True) as req:
+    with requests.get(url, stream=True, cookies={'recaptcha': ''}) as req:
         if req.status_code == 200:
             c_type = req.headers.get('Content-Type')
             if c_type is not None and 'application' not in c_type.lower():
