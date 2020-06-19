@@ -99,9 +99,12 @@ def get_iter_content(req, file_size, output_file, title_and_type):
     else:
         return req.iter_content(CHUNK_SIZE)
 
-
+HEADERS = {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like '\
+           'Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) '\
+           'CriOS/81.0.4044.124 Mobile/15E148 Safari/604.1'}
 def download_item(url, output_file, title_and_type):
-    with requests.get(url, stream=True, cookies={'recaptcha': ''}) as req:
+    payload = {'javascript-disabled': 'true'}
+    with requests.get(url, params=payload, headers=HEADERS) as req:
         if req.status_code == 200:
             c_type = req.headers.get('Content-Type')
             if c_type is not None and 'application' not in c_type.lower():
@@ -193,6 +196,7 @@ def download_books(books, folder, patches):
                             download_item(
                                 link, output_file, chapter + ', ' + title_and_type
                             )
+                print('[+] %s' % title)
             except (OSError, IOError) as e:
                 tqdm.write('\n{}'.format(e))
                 tqdm.write('* Problem downloading: {} ({}), so skipping it.'
